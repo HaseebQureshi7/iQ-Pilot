@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    pickUp: {
+    pickup: {
       type: [Number],
       required: true,
     },
