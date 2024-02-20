@@ -39,10 +39,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    pickup: {
-      type: [Number],
-      required: true,
-    },
+    pickup: [{ type: Number, default: null }],
     cabDetails: [
       {
         driver: {
