@@ -8,8 +8,17 @@ const signingFunc = (payload) => {
 };
 
 const signUp = catchAsync(async (req, res) => {
-  const { fName, lName, email, password, address, role, phone, pickUp } =
-    req.body;
+  const {
+    fName,
+    lName,
+    email,
+    password,
+    address,
+    role,
+    phone,
+    pickup,
+    cabDetails,
+  } = req.body;
   const newUser = await User.create({
     fName,
     lName,
@@ -18,7 +27,8 @@ const signUp = catchAsync(async (req, res) => {
     phone,
     address,
     role,
-    pickUp,
+    pickup,
+    cabDetails,
   });
   const token = signingFunc(newUser._id);
 
