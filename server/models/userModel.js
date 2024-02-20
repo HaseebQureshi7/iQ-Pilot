@@ -4,13 +4,19 @@ const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
+    fName: {
       type: String,
-      required: [true, "Please provide your name"],
+      required: [true, "Please provide your first name"],
+    },
+    lName: {
+      type: String,
+      required: [true, "Please provide your last name"],
     },
     phone: {
       type: String,
       required: [true, "Please provide your phone number"],
+      minlength: 10,
+      maxlength: 13,
       unique: true,
     },
     email: {
@@ -74,6 +80,12 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+userSchema.methods.checkPassword = async function (
+  passwordFromBody,
+  passwordInDb
+) {
+  return await bcrypt.compare(passwordFromBody, passwordInDb);
+};
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
