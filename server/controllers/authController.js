@@ -54,7 +54,7 @@ const login = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email });
 
   if (!user || !(await user.checkPassword(password, user.password))) {
-    next(new AppError("Incorrect email or password", 401));
+    return next(new AppError("Incorrect email or password", 401));
   }
 
   const token = signingFunc(user._id);
