@@ -1,7 +1,7 @@
 const AppError = require("../util/AppError");
 
 const sendDevError = (err, res) => {
-  console.lof("Dev Error");
+  console.log("Dev Error");
   return res.status(err.statusCode).json({
     msg: err.message,
     error: err,
@@ -45,7 +45,7 @@ const handleDBValidationError = (err) => {
 };
 
 module.exports = (err, req, res, next) => {
-  console.log("Global Error!");
+  console.log("Global Error!", err);
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
