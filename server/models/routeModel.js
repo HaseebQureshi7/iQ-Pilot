@@ -18,6 +18,7 @@ const routeSchema = new mongoose.Schema(
     },
     typeOfRoute: {
       type: String,
+      enum: ["pickup", "drop"],
       required: true,
     },
     estimatedTime: {
@@ -32,6 +33,6 @@ const routeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Route = mongoose.model("Route", routeSchema)
+const Route = mongoose.model("Route", routeSchema);
 
-module.exports = Route
+module.exports = Route;
