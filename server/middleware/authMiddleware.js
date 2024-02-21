@@ -1,6 +1,20 @@
 const AppError = require("../util/AppError");
-const catchAsync = require("../util/catchAsync.js");
+const { catchAsync } = require("../util/catchAsync.js");
 const { promisify } = require("util");
+const jwt = require("jsonwebtoken");
+const User = require("../models/userModel.js");
+
+const restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError("You do not have permission to perform this action", 403)
+      );
+    }
+
+    next();
+  };
+};
 
 const protect = catchAsync(async (req, res, next) => {
   // let token;
@@ -31,3 +45,5 @@ const protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+module.exports = { restrictTo, protect };
