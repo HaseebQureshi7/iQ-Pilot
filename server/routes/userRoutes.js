@@ -4,9 +4,14 @@ const {
   getUser,
   deleteUser,
   updateUser,
+  getAllEmployees,
+  getAllDrivers,
 } = require("../controllers/userController");
 
 const router = express.Router();
+
+router.route("/employees").get(getAllEmployees);
+router.route("/drivers").get(getAllDrivers);
 
 router.route("/").get(getAllUsers);
 
