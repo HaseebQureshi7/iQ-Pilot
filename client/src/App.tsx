@@ -11,10 +11,11 @@ function App() {
     <ThemeProvider theme={ProjectTheme(themeMode)}>
       <Box
         sx={{
-          minWidth: "100%",
+          maxWidth: "100vw",
           minHeight: "100vh",
           color: "text.primary",
           background: "background.default",
+          overflowX:"hidden"
         }}
       >
         <MainRouter />

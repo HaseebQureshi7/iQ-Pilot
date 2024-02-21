@@ -8,7 +8,17 @@ const signingFunc = (payload) => {
 };
 
 const signUp = catchAsync(async (req, res) => {
-  const { fName, lName, email, password, address, role, phone } = req.body;
+  const {
+    fName,
+    lName,
+    email,
+    password,
+    address,
+    role,
+    phone,
+    pickup,
+    cabDetails,
+  } = req.body;
   const newUser = await User.create({
     fName,
     lName,
@@ -17,6 +27,8 @@ const signUp = catchAsync(async (req, res) => {
     phone,
     address,
     role,
+    pickup,
+    cabDetails,
   });
   const token = signingFunc(newUser._id);
 
@@ -42,17 +54,17 @@ const signUp = catchAsync(async (req, res) => {
   });
 });
 
-const login = catchAsync(async (req, res) => {
+const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    next(new AppError("Please provide email and password", 400));
+    return next(new AppError("Please provide email and password", 400));
   }
 
   const user = await User.findOne({ email });
 
   if (!user || !(await user.checkPassword(password, user.password))) {
-    next(new AppError("Incorrect email or password", 401));
+    return next(new AppError("Incorrect email or password", 401));
   }
 
   const token = signingFunc(user._id);

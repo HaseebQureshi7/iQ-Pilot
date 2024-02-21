@@ -13,7 +13,7 @@ export const RowFlex = {
 }
 
 export const PageFlex = {
-    width: "100%",
+    width: "100vw",
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
