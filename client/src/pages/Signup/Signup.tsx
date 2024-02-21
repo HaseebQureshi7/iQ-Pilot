@@ -7,9 +7,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { FormEvent, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import { PageFlex, ColFlex, RowFlex } from "./../../style_extensions/Flex";
 import { useNavigate } from "react-router-dom";
+import useAxios from "../../api/useAxios";
+import { useMutation } from "@tanstack/react-query";
+import SnackbarContext from "../../context/SnackbarContext";
+import { SnackBarContextTypes } from "../../types/SnackbarTypes";
+import { UserTypes } from "../../types/UserTypes";
 
 type roleTypes = "admin" | "driver" | "employee";
 
@@ -20,11 +25,51 @@ function Signup() {
   const [currPosition, setCurrPosition] = useState<Array<number>>([0]);
   const [role, setRole] = useState<roleTypes>("employee");
 
+  const signupMF = (loginData: any) => {
+    return useAxios.post("auth/signup", loginData);
+  };
+
+  const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
+
+  const { mutate: signupUser, status: loginStatus } = useMutation({
+    mutationFn: signupMF,
+    onSuccess: (data) => {
+      console.log(data.data);
+      setOpenSnack({
+        open: true,
+        message: data.data.message,
+        severity: "success",
+      });
+
+      const user: UserTypes = data.data.user;
+      navigate(`/${user?.role}`);
+    },
+    onError: (err) => {
+      console.log(err);
+      setOpenSnack({
+        open: true,
+        message: err.message,
+        severity: "warning",
+      });
+    },
+  });
+
   function HandleSignup(e: FormEvent) {
     e.preventDefault();
     const currentTarget = e.currentTarget as HTMLFormElement;
     if (currPosition?.length <= 1) {
-      alert("Please provide a location");
+      setOpenSnack({
+        open: true,
+        message: "Provide a location",
+        severity: "warning",
+      });
+    }
+    if (currentTarget.password.value !== currentTarget.confirmPassword.value) {
+      setOpenSnack({
+        open: true,
+        message: "Passwords do not match",
+        severity: "warning",
+      });
     } else {
       const signupData = {
         profilePicture: profilePic,
@@ -35,16 +80,19 @@ function Signup() {
         address: currentTarget.address.value,
         pickup: currPosition,
         role,
-        cabDetails: role =="driver" ? {
-          cabNumber: currentTarget.cabNumber?.value || "",
-          cabColor: currentTarget.cabColor?.value || "",
-          seatingCapacity: currentTarget.seatingCapacity?.value || "",
-          numberPlate: currentTarget.numberPlate?.value || "",
-          model: currentTarget.model?.value || "",
-        } : null,
+        cabDetails:
+          role === "driver"
+            ? {
+                cabNumber: currentTarget.cabNumber?.value || "",
+                color: currentTarget.cabColor?.value || "",
+                seatingCapacity: currentTarget.seatingCapacity?.value || "",
+                numberPlate: currentTarget.numberPlate?.value || "",
+                model: currentTarget.model?.value || "",
+              }
+            : null,
         password: currentTarget.password.value,
       };
-
+      signupUser(signupData);
       console.log(signupData);
     }
   }
@@ -55,7 +103,11 @@ function Signup() {
         setCurrPosition([pos.coords.latitude, pos.coords.longitude]);
       },
       () => {
-        alert("Please allow location access!");
+        setOpenSnack({
+          open: true,
+          message: "Please provide access to your location!",
+          severity: "warning",
+        });
       },
       { enableHighAccuracy: true }
     );
@@ -96,7 +148,7 @@ function Signup() {
             variant="body2"
             sx={{ color: "text.secondary", fontWeight: 600 }}
           >
-            Hey there 👋, Welcome back.
+            Hey there 👋, Welcome.
           </Typography>
         </Box>
         <Box
@@ -341,6 +393,7 @@ function Signup() {
         <Button
           sx={{ width: "75%" }}
           type="submit"
+          disabled={loginStatus === "pending"}
           color="primary"
           variant="contained"
         >
