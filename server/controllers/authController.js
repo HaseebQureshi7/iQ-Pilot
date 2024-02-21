@@ -67,7 +67,7 @@ const login = catchAsync(async (req, res, next) => {
     return next(new AppError("Please provide email and password", 400));
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("+password");
 
   if (!user || !(await user.checkPassword(password, user.password))) {
     return next(new AppError("Incorrect email or password", 401));
@@ -97,7 +97,6 @@ const validateToken = catchAsync(async (req, res, next) => {
     );
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log(decoded);
 
   const currentUser = await User.findById({ _id: decoded.payload });
 
