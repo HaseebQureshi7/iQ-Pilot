@@ -10,10 +10,12 @@ const routeRouter = require("./routes/routeRoutes.js");
 const attendenceRouter = require("./routes/attendenceRoutes.js");
 const updateRouter = require("./routes/updateRoutes.js");
 const authRouter = require("./routes/authRoutes.js");
+const cookieParser = require("cookie-parser");
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1/auth", authRouter);
