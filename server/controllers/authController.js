@@ -46,6 +46,11 @@ const signUp = catchAsync(async (req, res) => {
   //       token,
   //     });
   //   }
+  res.cookie("jwt", token, {
+    secure: true,
+    httpOnly: false,
+    sameSite: "none",
+  });
 
   res.status(201).json({
     message: "User Registered",
@@ -69,6 +74,12 @@ const login = catchAsync(async (req, res, next) => {
 
   const token = signingFunc(user._id);
 
+  res.cookie("jwt", token, {
+    secure: true,
+    httpOnly: false,
+    sameSite: "none",
+  });
+
   res.status(200).json({
     message: "Logged in successfully",
     user,
@@ -76,4 +87,26 @@ const login = catchAsync(async (req, res, next) => {
   });
 });
 
-module.exports = { signUp, login };
+const validateToken = catchAsync(async (req, res, next) => {
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  if (!token)
+    return next(
+      new AppError("You are not logged in! Please log in to get access.", 401)
+    );
+
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  const currentUser = await User.findById({ _id: decoded.id });
+
+  if (!currentUser) {
+    return next(new AppError(`Invalid Token.`, 401));
+  }
+  res.status(200).json({ message: "User already logged in", currentUser });
+});
+module.exports = { signUp, login, validateToken };

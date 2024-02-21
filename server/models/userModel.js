@@ -43,28 +43,30 @@ const userSchema = new mongoose.Schema(
       { type: Number, default: null },
       { type: Number, default: null },
     ],
-    cabDetails: {
-      cabNumber: {
-        type: String,
-        default: "",
+    cabDetails: [
+      {
+        cabNumber: {
+          type: String,
+          default: "",
+        },
+        seatingCapacity: {
+          type: Number,
+          default: null,
+        },
+        numberPlate: {
+          type: String,
+          default: "",
+        },
+        model: {
+          type: String,
+          default: "",
+        },
+        color: {
+          type: String,
+          default: "",
+        },
       },
-      seatingCapacity: {
-        type: Number,
-        default: null,
-      },
-      numberPlate: {
-        type: String,
-        default: "",
-      },
-      model: {
-        type: String,
-        default: "",
-      },
-      color: {
-        type: String,
-        default: "",
-      },
-    },
+    ],
     address: {
       type: String,
       required: [true, "Please provide your address"],

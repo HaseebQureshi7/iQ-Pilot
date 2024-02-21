@@ -35,6 +35,9 @@ const handleDuplicateDBError = (err) => {
   return new AppError(message);
 };
 
+const handleJWTTokenError = () =>
+  new AppError("Invalid token. Please log in again!", 401);
+
 const handleDBValidationError = (err) => {
   console.log("Validation DB Error!!!");
   const errors = err.errors;
@@ -56,6 +59,7 @@ module.exports = (err, req, res, next) => {
     if (err.name === "CastError") error = handleCastError(err);
     if (err.code === 1100) error = handleDuplicateDBError(err);
     if (err.name === "ValidationError") error = handleDBValidationError(err);
+    if (err.name === "JsonWebTokenError") error = handleJWTTokenError();
     sendProdError(err, res);
   }
 };
