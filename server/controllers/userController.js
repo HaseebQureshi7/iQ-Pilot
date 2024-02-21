@@ -28,7 +28,7 @@ exports.deleteUser = catchAsync(async function (req, res) {
     return next(new AppError("No user found with that ID", 404));
   }
   res.status(204).json({ msg: "User Deleted!" });
-};
+});
 
 exports.updateUser = catchAsync(async function (req, res) {
   const { id } = req.params;
