@@ -17,7 +17,7 @@ const protect = catchAsync(async (req, res, next) => {
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  const currentUser = await User.findById({ _id: decoded.id });
+  const currentUser = await User.findById({ _id: decoded.payload });
 
   if (!currentUser) {
     return next(
