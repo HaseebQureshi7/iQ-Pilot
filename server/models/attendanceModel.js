@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 
-const attendenceSchema = new mongoose.Schema(
+const attendanceSchema = new mongoose.Schema(
   {
     ofEmployee: {
-      type: [mongoose.Schema.Types.ObjectId],
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
     ofRoute: {
-      type: [mongoose.Schema.Types.ObjectId],
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Route",
     },
     isPresent: {
@@ -22,5 +22,5 @@ const attendenceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Attendance = mongoose.model("Attendence", attendenceSchema);
+const Attendance = mongoose.model("Attendance", attendanceSchema);
 module.exports = Attendance;
