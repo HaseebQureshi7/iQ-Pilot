@@ -15,7 +15,25 @@ const ProjectTheme = (themeMode: PaletteMode) =>
             },
         },
         typography: {
-            fontFamily: "Lato"
+            fontFamily: "Lato",
+        },
+        components: {
+            MuiTypography: {
+                styleOverrides: {
+                    root: {
+                        letterSpacing: "0.5px",
+                    },
+                },
+            },
+            MuiButton: {
+                styleOverrides: {
+                    root: {
+                        fontWeight: 600,
+                        textTransform: "none",
+                        letterSpacing:"0.5px"
+                    }
+                }
+            }
         }
     });
 
