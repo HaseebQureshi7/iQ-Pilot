@@ -25,7 +25,7 @@ router
   .route("/driverRoute/:did")
   .get(protect, restrictTo("admin", "driver"), getRouteByDriver);
 
-// router.route("/employeeRoute/:eid").get(protect, getEmployeeRoute);
+router.route("/employeeRoute/:eid").get(protect, getEmployeeRoute);
 
 router
   .route("/")

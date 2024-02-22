@@ -69,12 +69,12 @@ exports.getRosteredPassenger = catchAsync(async function (req, res, next) {
       },
     },
   ]);
-
   const passengersIDS = aggregateData.map((passenger) => passenger._id);
 
-  const passengers = await User.find({ _id: { $in: passengersIDS } }).select(
-    "-cabDetails"
-  );
+  const passengers = await User.find({
+    _id: { $in: passengersIDS },
+    role: { $ne: "driver" },
+  }).select("-cabDetails");
   res.status(200).json({
     message: "Passenger Roastered!",
     totalRoastered: passengers.length,
@@ -115,10 +115,16 @@ exports.getRouteByDriver = catchAsync(async function (req, res, next) {
   res.status(200).json({ message: "Routes Found!", routes });
 });
 
-// exports.getEmployeeRoute = catchAsync(async function (req, res, next) {
-//   const { eid } = req.params;
-//   const routes = await Route.find({ routeStatus: "notStarted",{$in:{}} });
-//   if (!routes)
-//     return next(new AppError("No routes assigned to the driver"), 404);
-//   res.status(200).json({ message: "Routes Found!", routes });
-// });
+exports.getEmployeeRoute = catchAsync(async function (req, res, next) {
+  const { eid } = req.params;
+  const routes = await Route.find({
+    routeStatus: "notStarted",
+    passengers: { $in: eid },
+  }).populate({
+    path: "driver",
+    select: "cabDetails fName lName phone profilePicture",
+  });
+  if (!routes)
+    return next(new AppError("No routes assigned to the driver"), 404);
+  res.status(200).json({ message: "Routes Found!", routes });
+});
