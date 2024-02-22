@@ -7,18 +7,34 @@ const {
   updateRoute,
   getRosteredPassenger,
   pendingPassengers,
+  getRouteByDriver,
+  getAllNonActiveRoutes,
+  getEmployeeRoute,
 } = require("../controllers/routesController");
 const { restrictTo, protect } = require("../middleware/authMiddleware.js");
 
 const router = express.Router();
 
 router
+  .route("/rosteredPassengers")
+  .get(protect, restrictTo("admin"), getRosteredPassenger);
+router
+  .route("/pendingPassengers")
+  .get(protect, restrictTo("admin"), pendingPassengers);
+router
+  .route("/driverRoute/:did")
+  .get(protect, restrictTo("admin", "driver"), getRouteByDriver);
+
+// router.route("/employeeRoute/:eid").get(protect, getEmployeeRoute);
+
+router
   .route("/")
   .get(protect, restrictTo("admin"), getAllRoutes)
   .post(protect, restrictTo("admin"), createRoute);
 
-router.route("/rosteredPassengers").get(getRosteredPassenger);
-router.route("/pendingPassengers").get(pendingPassengers);
+router
+  .route("/nonActive")
+  .get(protect, restrictTo("admin"), getAllNonActiveRoutes);
 
 router
   .route("/:id")

@@ -27,6 +27,7 @@ const routeSchema = new mongoose.Schema(
     routeStatus: {
       type: String,
       enum: ["notStarted", "inProgress", "completed"],
+      default: "notStarted",
     },
     totalDistance: Number,
   },
