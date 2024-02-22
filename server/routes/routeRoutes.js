@@ -5,6 +5,8 @@ const {
   getRoute,
   deleteRoute,
   updateRoute,
+  getRosteredPassenger,
+  pendingPassengers,
 } = require("../controllers/routesController");
 const { restrictTo, protect } = require("../middleware/authMiddleware.js");
 
@@ -14,6 +16,9 @@ router
   .route("/")
   .get(protect, restrictTo("admin"), getAllRoutes)
   .post(protect, restrictTo("admin"), createRoute);
+
+router.route("/rosteredPassengers").get(getRosteredPassenger);
+router.route("/pendingPassengers").get(pendingPassengers);
 
 router
   .route("/:id")

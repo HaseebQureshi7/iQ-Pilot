@@ -1,4 +1,5 @@
 const Route = require("../models/routeModel");
+const User = require("../models/userModel.js");
 const { catchAsync } = require("../util/catchAsync.js");
 
 exports.getRoute = async function (req, res, next) {
@@ -44,5 +45,55 @@ exports.getAllRoutes = catchAsync(async function (req, res, next) {
     message: "All Routes Found",
     count: allRoutes.length,
     allRoutes,
+  });
+});
+
+// TESTING
+exports.getRosteredPassenger = catchAsync(async function (req, res, next) {
+  const aggregateData = await Route.aggregate([
+    {
+      $unwind: "$passengers",
+    },
+    {
+      $group: {
+        _id: "$passengers",
+      },
+    },
+  ]);
+
+  const passengersIDS = aggregateData.map((passenger) => passenger._id);
+
+  const passengers = await User.find({ _id: { $in: passengersIDS } }).select(
+    "-cabDetails"
+  );
+  res.status(200).json({
+    message: "Passenger Roastered!",
+    totalRoastered: passengers.length,
+    roasterd: passengers,
+  });
+});
+
+exports.pendingPassengers = catchAsync(async function (req, res, next) {
+  const aggregateData = await Route.aggregate([
+    {
+      $unwind: "$passengers",
+    },
+    {
+      $group: {
+        _id: "$passengers",
+      },
+    },
+  ]);
+
+  const passengersIDS = aggregateData.map((passenger) => passenger._id);
+
+  const pendingPassengers = await User.find({
+    _id: { $nin: passengersIDS },
+    role: { $eq: "employee" },
+  }).select("-cabDetails");
+  res.status(200).json({
+    message: "Pending Passengers!",
+    totalNonRoastered: pendingPassengers.length,
+    pendingPassengers,
   });
 });
