@@ -1,10 +1,19 @@
-import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
+import {
+  MapContainer,
+  Marker,
+  TileLayer,
+  Tooltip,
+  useMapEvents,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 // import "leaflet-routing-machine";
 // import { OpenStreetMapProvider } from "leaflet-geosearch";
 import { useContext, useState } from "react";
-import { Icon } from "leaflet";
+import { Icon, LatLngExpression } from "leaflet";
 import UserDataContext from "../context/UserDataContext";
+import useAxios from "../api/useAxios";
+import { useQuery } from "@tanstack/react-query";
+import { UserTypes } from "../types/UserTypes";
 
 type MapTypes = {
   width?: string;
@@ -31,9 +40,17 @@ const MapComponent = ({
   });
 
   const empIcon = new Icon({
-    iconUrl: "/icon-passenger.png",
+    iconUrl: "/images/icon-passenger.png",
     iconSize: [40, 40], // specify the size of your icon
+    iconAnchor: [20, 40],
   });
+
+  // const empIcon = (name: string) => {
+  //   return {
+  //     html: `<div>${name}</div>`,
+  //     iconSize: [40, 40],
+  //   };
+  // };
 
   const officeIcon = new Icon({
     iconUrl: "/office-icon.png",
@@ -54,6 +71,19 @@ const MapComponent = ({
     return null;
   }
 
+  // ALL PENDING PASSENGERS
+  const getAllEmployees = () => {
+    return useAxios.get("users/employees");
+  };
+
+  const { data: allEmployees, status: allEmployeesStatus } = useQuery({
+    queryFn: getAllEmployees,
+    queryKey: ["All Employees"],
+    select: (data) => {
+      return data.data.employees;
+    },
+  });
+
   return (
     <div style={{ position: "relative", height, width, overflow: "hidden" }}>
       {/* <button onClick={() => setPosition([34.0836, 74.7973])}>
@@ -62,7 +92,7 @@ const MapComponent = ({
       <MapContainer
         style={{ height: "100%", width: "100%" }}
         center={[34.0836, 74.7973]}
-        zoom={11}
+        zoom={12}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -77,11 +107,21 @@ const MapComponent = ({
 
         <MapController />
 
-        {/* {markersArray?.length &&
-          markersArray.map((marker: any) => {
-            // console.log(marker.pickup)
-            return <Marker icon={empIcon} key={marker} position={marker} />;
-          })} */}
+        {allEmployeesStatus === "success" &&
+          allEmployees?.length > 1 &&
+          allEmployees.map((employee: UserTypes) => {
+            return (
+              <Marker
+                icon={empIcon}
+                key={employee?._id}
+                position={employee?.pickup as LatLngExpression}
+              >
+                <Tooltip className="employee-tooltip" direction="top" offset={[0, -40]} permanent>
+                  <span>{employee.fName[0] + "." + " " + employee.lName}</span>
+                </Tooltip>
+              </Marker>
+            );
+          })}
       </MapContainer>
     </div>
   );

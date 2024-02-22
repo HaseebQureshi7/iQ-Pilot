@@ -15,22 +15,22 @@ const ProjectTheme = (themeMode: PaletteMode) =>
             },
         },
         typography: {
-            fontFamily: "Lato",
+            fontFamily: "Inter",
         },
         components: {
             MuiTypography: {
                 styleOverrides: {
                     root: {
-                        letterSpacing: "0.5px",
+                        // letterSpacing: "0.5px",
                     },
                 },
             },
             MuiButton: {
                 styleOverrides: {
                     root: {
-                        fontWeight: 600,
+                        // fontWeight: 600,
                         textTransform: "none",
-                        letterSpacing:"0.5px"
+                        // letterSpacing:"0.5px"
                     }
                 }
             }

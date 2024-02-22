@@ -98,7 +98,7 @@ exports.pendingPassengers = catchAsync(async function (req, res, next) {
 
   const pendingPassengers = await User.find({
     _id: { $nin: passengersIDS },
-    role: { $eq: "employee" },
+    role: { $ne: "driver" },
   }).select("-cabDetails");
   res.status(200).json({
     message: "Pending Passengers!",
