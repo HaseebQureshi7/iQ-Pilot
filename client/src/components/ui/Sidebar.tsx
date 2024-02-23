@@ -119,7 +119,7 @@ function Sidebar() {
         sx={{
           ...ColFlex,
           width: "100%",
-          height: "30%",
+          height: "25%",
           justifyContent: "flex-start",
         }}
       >
@@ -143,8 +143,8 @@ function Sidebar() {
           sx={{
             borderRadius: "100px",
             width: "35%",
-            p:"1px",
-            fontSize:"0.7rem"
+            p: "1px",
+            fontSize: "0.7rem",
           }}
           size="small"
           variant="contained"
