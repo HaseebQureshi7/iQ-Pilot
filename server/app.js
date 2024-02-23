@@ -7,10 +7,10 @@ const AppError = require("./util/AppError.js");
 const globalErrorMiddleware = require("./controllers/errorController.js");
 const userRouter = require("./routes/userRoutes.js");
 const routeRouter = require("./routes/routeRoutes.js");
-const attendenceRouter = require("./routes/attendenceRoutes.js");
 const updateRouter = require("./routes/updateRoutes.js");
 const authRouter = require("./routes/authRoutes.js");
 const cookieParser = require("cookie-parser");
+const attendanceRoutes = require("./routes/attendanceRoutes");
 const app = express();
 
 app.use(express.json({ limit: "2mb" }));
@@ -26,8 +26,8 @@ app.use("/api/v1/auth", authRouter);
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/route", routeRouter);
-app.use("/api/v1/attendence", attendenceRouter);
 app.use("/api/v1/update", updateRouter);
+app.use("/api/v1/attendance", attendanceRoutes);
 
 app.all("*", (req, res, next) => {
   const err = new AppError(
