@@ -13,8 +13,16 @@ const routeSchema = new mongoose.Schema(
       required: true,
     },
     shiftTime: {
+      type: Number,
+      required: true,
+    },
+    shiftDate: {
       type: String,
       required: true,
+    },
+    office: {
+      type: String,
+      required: true
     },
     typeOfRoute: {
       type: String,

@@ -4,6 +4,7 @@ export interface UserTypes {
     lName: string,
     phone?: number;
     email?: string;
+    department?: string;
     role?: "admin" | "employee" | "driver";
     password?: string;
     profilePicture?: string;

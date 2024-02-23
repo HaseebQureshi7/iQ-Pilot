@@ -9,6 +9,7 @@ import AdminDashboardLayout from "../layouts/AdminDashboardLayout";
 import { useContext } from "react";
 import UserDataContext from "../context/UserDataContext";
 import UserContextTypes from "../types/UserContextTypes";
+import AddPassengers from "../pages/AddPassengers/AddPassengers";
 
 function MainRouter() {
   const { userData }: UserContextTypes = useContext(UserDataContext);
@@ -29,9 +30,12 @@ function MainRouter() {
       <Route path="/signup" element={<Signup />} />
       {/* ADMIN ROUTER */}
       {userData?.role === "admin" && (
+        <>
         <Route path="/admin" element={<AdminDashboardLayout />}>
           <Route index element={<AdminDashboard />} />
         </Route>
+          <Route path="admin/addPassengers" element={<AddPassengers />} />
+        </>
       )}
       {/* DRIVER ROUTER */}
       {userData?.role === "driver" && (

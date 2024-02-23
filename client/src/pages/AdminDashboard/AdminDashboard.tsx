@@ -94,12 +94,15 @@ function AdminDashboard() {
             marginLeft: "50px",
           }}
         >
-          <Box sx={{ ...ColFlex, alignItems: "flex-start", gap:'5px' }}>
+          <Box sx={{ ...ColFlex, alignItems: "flex-start", gap: "5px" }}>
             <Typography variant="h4" fontWeight={700}>
               Today's Plan
             </Typography>
             <Typography color={"GrayText"} variant="body1">
-              It’s <span style={{fontWeight:600}}>Tuesday, 19th of March - 2024</span>
+              It’s{" "}
+              <span style={{ fontWeight: 600 }}>
+                Tuesday, 19th of March - 2024
+              </span>
             </Typography>
           </Box>
         </Box>
@@ -188,6 +191,7 @@ function AdminDashboard() {
           </Box>
         </Box>
       </Box>
+      {/* MAP */}
       <Box
         sx={{
           width: "100%",

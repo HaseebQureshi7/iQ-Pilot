@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    department: {
+      type: String,
+      default: null,
+    },
     pickup: [
       { type: Number, default: null },
       { type: Number, default: null },
