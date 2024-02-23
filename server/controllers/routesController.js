@@ -10,12 +10,15 @@ exports.getRoute = async function (req, res, next) {
 };
 
 exports.createRoute = catchAsync(async function (req, res, next) {
-  const { driver, passengers, shiftTime, typeOfRoute } = req.body;
+  const { driver, passengers, shiftTime, typeOfRoute, shiftDate, office } =
+    req.body;
   const newRoute = await Route.create({
     driver,
     passengers,
     shiftTime,
     typeOfRoute,
+    shiftDate,
+    office,
   });
   res
     .status(201)

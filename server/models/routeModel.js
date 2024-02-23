@@ -22,7 +22,7 @@ const routeSchema = new mongoose.Schema(
     },
     office: {
       type: String,
-      required: true
+      required: true,
     },
     typeOfRoute: {
       type: String,
