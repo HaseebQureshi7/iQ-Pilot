@@ -110,8 +110,8 @@ exports.pendingPassengers = catchAsync(async function (req, res, next) {
 exports.getRouteByDriver = catchAsync(async function (req, res, next) {
   const { did } = req.params;
   const routes = await Route.find({ driver: did });
-  if (!routes)
-    return next(new AppError("No routes assigned to the driver"), 404);
+  if (routes.length === 0)
+    return next(new AppError("No routes assigned to the driver", 404));
   res.status(200).json({ message: "Routes Found!", routes });
 });
 
@@ -120,11 +120,16 @@ exports.getEmployeeRoute = catchAsync(async function (req, res, next) {
   const routes = await Route.find({
     routeStatus: "notStarted",
     passengers: { $in: eid },
-  }).populate({
-    path: "driver",
-    select: "cabDetails fName lName phone profilePicture",
-  });
-  if (!routes)
-    return next(new AppError("No routes assigned to the driver"), 404);
-  res.status(200).json({ message: "Routes Found!", routes });
+  })
+    .populate({
+      path: "passengers",
+      select: "-cabDetails",
+    })
+    .populate({
+      path: "driver",
+      select: "cabDetails fName lName phone profilePicture",
+    });
+  if (routes.length === 0)
+    return next(new AppError("No routes assigned to the employee", 404));
+  res.status(200).json({ message: "Employee Route Found!", routes });
 });
