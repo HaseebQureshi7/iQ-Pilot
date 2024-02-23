@@ -5,7 +5,7 @@ const { catchAsync } = require("../util/catchAsync.js");
 
 exports.getRoute = async function (req, res, next) {
   const { id } = req.params;
-  const route = await Route.findById({ _id: id });
+  const route = await Route.findById({ _id: id }).populate("driver");
   res.status(200).json({ message: "Routes Found", route });
 };
 
@@ -44,7 +44,7 @@ exports.deleteRoute = catchAsync(async function (req, res, next) {
 });
 
 exports.getAllRoutes = catchAsync(async function (req, res, next) {
-  const allRoutes = await Route.find({});
+  const allRoutes = await Route.find({}).populate("driver");
   res.status(200).json({
     message: "All Routes Found",
     count: allRoutes.length,
