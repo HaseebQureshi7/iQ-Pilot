@@ -1,9 +1,7 @@
-import { UserTypes } from "./UserTypes";
-
 type RouteTypes = {
     driver?: string;
-    passengers?: [UserTypes];
-    shiftTime?: number;
+    passengers?: Array<string>;
+    shiftTime?: string;
     shiftDate?: string;
     office?: string;
     typeOfRoute?: 'pickup' | 'drop';

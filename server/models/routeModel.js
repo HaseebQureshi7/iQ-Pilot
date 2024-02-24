@@ -13,7 +13,7 @@ const routeSchema = new mongoose.Schema(
       required: true,
     },
     shiftTime: {
-      type: Number,
+      type: String,
       required: true,
     },
     shiftDate: {
@@ -37,7 +37,7 @@ const routeSchema = new mongoose.Schema(
       enum: ["notStarted", "inProgress", "completed"],
       default: "notStarted",
     },
-    totalDistance: Number,
+    totalDistance: {type: Number},
   },
   { timestamps: true }
 );

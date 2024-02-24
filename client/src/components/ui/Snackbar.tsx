@@ -15,7 +15,7 @@ const GlobalSnackbar = ({
   return (
     <Snackbar
       open={openSnack.open}
-      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}
       autoHideDuration={6000}
       onClose={() =>
         setOpenSnack({

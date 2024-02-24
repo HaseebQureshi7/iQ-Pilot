@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Button,
+  ButtonBase,
   FormControl,
   IconButton,
   InputLabel,
@@ -15,27 +16,97 @@ import { PageFlex, ColFlex, RowFlex } from "./../../style_extensions/Flex";
 import MapComponent from "../../components/Map";
 import RouteTypes from "../../types/RouteTypes";
 import ConvertTo12HourFormat from "../../utils/12HourFormat";
-import { Add, Cancel, Route, Search } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import {
+  Add,
+  Cancel,
+  Close,
+  LocalTaxi,
+  Route,
+  Search,
+  Visibility,
+} from "@mui/icons-material";
+import { useContext, useEffect, useState } from "react";
 import { UserTypes } from "../../types/UserTypes";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import SelectedEmpsContext from "../../context/SelectedEmpsContext";
+import { RMDataPromise } from "../../components/RoutingMachine";
+import useAxios from "../../api/useAxios";
+import SnackbarContext from "../../context/SnackbarContext";
+import { SnackBarContextTypes } from "../../types/SnackbarTypes";
+
+// export const GetRMData = (RMData:any) => {
+//   console.log(RMData)
+//   return RMData
+// }
 
 function AddPassengers() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
+
+  const { selectedEmps, setSelectedEmps } = useContext(SelectedEmpsContext);
+
+  const rangreth = [33.996807, 74.79202];
+  const zaira = [34.1639168, 74.8158976];
+
   const qc = useQueryClient();
+
+  const routeState = location?.state as RouteTypes;
+  // console.log(routeState);
+  // console.log((routeState?.driver as any)?.cabDetails.seatingCapacity)
 
   const employees: Array<UserTypes> = (
     qc.getQueryData(["All Employees"]) as any
   )?.data?.employees;
 
   const [searchField, setSearchField] = useState<string>("");
+  const [distNtime, setDistNtime] = useState<any>({});
   const [filteredEmployees, setFilteredEmployees] = useState<Array<UserTypes>>(
     []
   );
 
   const [department, setDepartment] = useState("");
+  const [selectedPassengers, setSelectedPassengers] = useState<
+    Array<UserTypes>
+  >([]);
+  const [previewMode, setPreviewMode] = useState<boolean>(false);
+
+  const handleAddPassengersToCab = (newPassenger: UserTypes) => {
+    // Check if the newPassenger is already present in selectedPassengers
+    if (
+      selectedPassengers?.length <
+      (routeState?.driver as any).cabDetails?.seatingCapacity
+    ) {
+      const isAlreadyAdded = selectedPassengers.some(
+        (passenger) => passenger._id === newPassenger._id
+      );
+
+      // If not already added, add the newPassenger
+      if (!isAlreadyAdded) {
+        setSelectedPassengers((prevPassengers) => [
+          ...prevPassengers,
+          newPassenger,
+        ]);
+      }
+    }
+  };
+
+  const handleRemovePassengersFromCab = (employeeToRemove: UserTypes) => {
+    setSelectedEmps([]);
+
+    setSelectedEmps((prevEmployees: UserTypes[]) =>
+      prevEmployees.filter(
+        (employee: UserTypes) => employee._id !== employeeToRemove._id
+      )
+    );
+
+    setSelectedPassengers((prevPassengers: UserTypes[]) =>
+      prevPassengers.filter(
+        (passenger: UserTypes) => passenger._id !== employeeToRemove._id
+      )
+    );
+  };
 
   // Function to handle changes in the department selection
   const handleChangeDepartment = (event: any) => {
@@ -44,20 +115,90 @@ function AddPassengers() {
 
   const SearchEmployees = (e: any) => {
     setSearchField(e.target.value);
+    const searchInput: string = e.target.value.toLowerCase();
     //  INTEGRATION MISSING  -----> Department Sort due to no field of department on the BE
-    const filteredEmps = employees.filter(
-      (emp: UserTypes) =>
-        emp.fName.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        emp.lName.toLowerCase().includes(e.target.value.toLowerCase())
-    );
-    setFilteredEmployees(filteredEmps);
+    if (employees?.length) {
+      const filteredEmps = employees.filter(
+        (emp: UserTypes) =>
+          emp.fName.toLowerCase().includes(searchInput) ||
+          emp.lName.toLowerCase().includes(searchInput)
+      );
+      setFilteredEmployees(filteredEmps);
+    }
+    return;
   };
 
-  useEffect(() => {
-    console.log(filteredEmployees);
-  }, [filteredEmployees]);
+  const createRouteMF = (routeData: any) => {
+    return useAxios.post("route", routeData);
+  };
 
-  const routeState = location?.state as RouteTypes;
+  const { mutate, status } = useMutation({
+    mutationFn: createRouteMF,
+    onSuccess: () => {
+      setOpenSnack({
+        open: true,
+        message: "Route added Successfully",
+        severity: "success",
+      });
+      setSelectedEmps([]);
+      navigate("/admin");
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  function HandlePreviewRoute() {
+    // Extracting only the _id field from passengers array
+    setPreviewMode(!previewMode);
+    // console.log(passengersLatLons)
+
+    const passengersLatLons: string[] = selectedPassengers.map(
+      (passenger: any) => passenger.pickup
+    );
+
+    setSelectedEmps([
+      ...passengersLatLons,
+      routeState?.office === "Rangreth" ? rangreth : zaira,
+    ]);
+  }
+
+  useEffect(() => {
+    setSelectedEmps([]);
+  }, [selectedPassengers]);
+
+  function HandleCreateRoute() {
+    if (selectedPassengers?.length < 1) {
+      setOpenSnack({
+        open: true,
+        message: "Cab cannot be empty, please add TMs to create a route!",
+        severity: "warning",
+      });
+      return;
+    }
+    const passengersIds: string[] = selectedPassengers.map(
+      (passenger: any) => passenger._id
+    );
+
+    // Accessing _id field directly from the driver object
+    const driverId: string | undefined = (routeState?.driver as any)?._id;
+
+    // Creating the routeData object with passengersIds and driverId
+    RMDataPromise.then((res) => {
+      setDistNtime(res);
+
+      const routeData: RouteTypes = {
+        ...routeState,
+        passengers: passengersIds,
+        driver: driverId,
+        estimatedTime: res?.totalMinutes,
+        totalDistance: res?.distanceInKilometers,
+      };
+
+      // console.log(routeData);
+      mutate(routeData);
+    });
+  }
 
   if (!routeState) {
     navigate(-1);
@@ -80,7 +221,7 @@ function AddPassengers() {
           justifyContent: "flex-start",
           alignItems: "flex-start",
           //   flex: 3.5,
-          width: "35%",
+          width: "30%",
           backgroundColor: "white",
           height: "100%",
           borderRadius: "15px",
@@ -179,12 +320,12 @@ function AddPassengers() {
           </Box>
         </Box>
         {/* L -3 */}
-        <Box sx={{ ...ColFlex, width: "100%", gap: "10px", maxHeight: "30%" }}>
+        <Box sx={{ ...ColFlex, width: "100%", gap: "10px" }}>
           {filteredEmployees.length >= 1 &&
             searchField?.length > 0 &&
-            filteredEmployees.slice(0, 4).map((employee) => {
+            filteredEmployees?.slice(0, 8).map((employee) => {
               return (
-                <Box sx={{ ...RowFlex, width: "100%" }}>
+                <Box key={employee?._id} sx={{ ...RowFlex, width: "100%" }}>
                   <Box
                     sx={{
                       ...RowFlex,
@@ -218,333 +359,25 @@ function AddPassengers() {
                     </Box>
                   </Box>
                   <Box sx={{ ...RowFlex, width: "20%" }}>
-                    <Add
-                      sx={{
-                        backgroundColor: "primary.main",
-                        borderRadius: "100px",
-                        p: 0.5,
-                        width: "40px",
-                        height: "40px",
-                        color: "white",
-                      }}
-                    />
+                    <ButtonBase
+                      onClick={() => handleAddPassengersToCab(employee)}
+                      sx={{ borderRadius: "100px" }}
+                    >
+                      <Add
+                        sx={{
+                          backgroundColor: "primary.main",
+                          borderRadius: "100px",
+                          p: 0.5,
+                          width: "40px",
+                          height: "40px",
+                          color: "white",
+                        }}
+                      />
+                    </ButtonBase>
                   </Box>
                 </Box>
               );
             })}
-        </Box>
-        {/* L -4 */}
-        <Box
-          sx={{
-            ...ColFlex,
-            width: "100%",
-            gap: "10px",
-            marginTop: "auto",
-            border: "2px solid #212A3B",
-            p: "5px",
-            borderRadius: "15px",
-          }}
-        >
-          {/* EMP */}
-          <Box
-            sx={{
-              ...RowFlex,
-              width: "100%",
-            }}
-          >
-            <Box
-              sx={{
-                ...RowFlex,
-                width: "80%",
-                justifyContent: "flex-start",
-                gap: "10px",
-              }}
-            >
-              <Avatar sx={{ width: "30px", height: "30px" }} />
-              <Box>
-                <Typography variant="body1">name</Typography>
-                <Typography
-                  sx={{
-                    fontSize: "0.7rem",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Route
-                    sx={{
-                      width: "12.5px",
-                      height: "12.5px",
-                      mr: "5px",
-                      color: "secondary.main",
-                    }}
-                  />
-                  address
-                </Typography>
-              </Box>
-            </Box>
-            <Box sx={{ ...RowFlex, width: "20%" }}>
-              <Add
-                sx={{
-                  backgroundColor: "primary.main",
-                  borderRadius: "100px",
-                  p: 0.5,
-                  width: "40px",
-                  height: "40px",
-                  color: "white",
-                }}
-              />
-            </Box>
-          </Box>
-          {/* EMP */}
-          <Box
-            sx={{
-              ...RowFlex,
-              width: "100%",
-            }}
-          >
-            <Box
-              sx={{
-                ...RowFlex,
-                width: "80%",
-                justifyContent: "flex-start",
-                gap: "10px",
-              }}
-            >
-              <Avatar sx={{ width: "30px", height: "30px" }} />
-              <Box>
-                <Typography variant="body1">name</Typography>
-                <Typography
-                  sx={{
-                    fontSize: "0.7rem",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Route
-                    sx={{
-                      width: "12.5px",
-                      height: "12.5px",
-                      mr: "5px",
-                      color: "secondary.main",
-                    }}
-                  />
-                  address
-                </Typography>
-              </Box>
-            </Box>
-            <Box sx={{ ...RowFlex, width: "20%" }}>
-              <Add
-                sx={{
-                  backgroundColor: "primary.main",
-                  borderRadius: "100px",
-                  p: 0.5,
-                  width: "40px",
-                  height: "40px",
-                  color: "white",
-                }}
-              />
-            </Box>
-          </Box>
-          {/* EMP */}
-          <Box
-            sx={{
-              ...RowFlex,
-              width: "100%",
-            }}
-          >
-            <Box
-              sx={{
-                ...RowFlex,
-                width: "80%",
-                justifyContent: "flex-start",
-                gap: "10px",
-              }}
-            >
-              <Avatar sx={{ width: "30px", height: "30px" }} />
-              <Box>
-                <Typography variant="body1">name</Typography>
-                <Typography
-                  sx={{
-                    fontSize: "0.7rem",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Route
-                    sx={{
-                      width: "12.5px",
-                      height: "12.5px",
-                      mr: "5px",
-                      color: "secondary.main",
-                    }}
-                  />
-                  address
-                </Typography>
-              </Box>
-            </Box>
-            <Box sx={{ ...RowFlex, width: "20%" }}>
-              <Add
-                sx={{
-                  backgroundColor: "primary.main",
-                  borderRadius: "100px",
-                  p: 0.5,
-                  width: "40px",
-                  height: "40px",
-                  color: "white",
-                }}
-              />
-            </Box>
-          </Box>
-          {/* EMP */}
-          <Box
-            sx={{
-              ...RowFlex,
-              width: "100%",
-            }}
-          >
-            <Box
-              sx={{
-                ...RowFlex,
-                width: "80%",
-                justifyContent: "flex-start",
-                gap: "10px",
-              }}
-            >
-              <Avatar sx={{ width: "30px", height: "30px" }} />
-              <Box>
-                <Typography variant="body1">name</Typography>
-                <Typography
-                  sx={{
-                    fontSize: "0.7rem",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Route
-                    sx={{
-                      width: "12.5px",
-                      height: "12.5px",
-                      mr: "5px",
-                      color: "secondary.main",
-                    }}
-                  />
-                  address
-                </Typography>
-              </Box>
-            </Box>
-            <Box sx={{ ...RowFlex, width: "20%" }}>
-              <Add
-                sx={{
-                  backgroundColor: "primary.main",
-                  borderRadius: "100px",
-                  p: 0.5,
-                  width: "40px",
-                  height: "40px",
-                  color: "white",
-                }}
-              />
-            </Box>
-          </Box>
-          {/* EMP */}
-          <Box
-            sx={{
-              ...RowFlex,
-              width: "100%",
-            }}
-          >
-            <Box
-              sx={{
-                ...RowFlex,
-                width: "80%",
-                justifyContent: "flex-start",
-                gap: "10px",
-              }}
-            >
-              <Avatar sx={{ width: "30px", height: "30px" }} />
-              <Box>
-                <Typography variant="body1">name</Typography>
-                <Typography
-                  sx={{
-                    fontSize: "0.7rem",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Route
-                    sx={{
-                      width: "12.5px",
-                      height: "12.5px",
-                      mr: "5px",
-                      color: "secondary.main",
-                    }}
-                  />
-                  address
-                </Typography>
-              </Box>
-            </Box>
-            <Box sx={{ ...RowFlex, width: "20%" }}>
-              <Add
-                sx={{
-                  backgroundColor: "primary.main",
-                  borderRadius: "100px",
-                  p: 0.5,
-                  width: "40px",
-                  height: "40px",
-                  color: "white",
-                }}
-              />
-            </Box>
-          </Box>
-          {/* EMP */}
-          <Box
-            sx={{
-              ...RowFlex,
-              width: "100%",
-            }}
-          >
-            <Box
-              sx={{
-                ...RowFlex,
-                width: "80%",
-                justifyContent: "flex-start",
-                gap: "10px",
-              }}
-            >
-              <Avatar sx={{ width: "30px", height: "30px" }} />
-              <Box>
-                <Typography variant="body1">name</Typography>
-                <Typography
-                  sx={{
-                    fontSize: "0.7rem",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Route
-                    sx={{
-                      width: "12.5px",
-                      height: "12.5px",
-                      mr: "5px",
-                      color: "secondary.main",
-                    }}
-                  />
-                  address
-                </Typography>
-              </Box>
-            </Box>
-            <Box sx={{ ...RowFlex, width: "20%" }}>
-              <Add
-                sx={{
-                  backgroundColor: "primary.main",
-                  borderRadius: "100px",
-                  p: 0.5,
-                  width: "40px",
-                  height: "40px",
-                  color: "white",
-                }}
-              />
-            </Box>
-          </Box>
         </Box>
       </Box>
       {/* RS */}
@@ -552,7 +385,7 @@ function AddPassengers() {
         sx={{
           ...ColFlex,
           //   flex: 6.5,
-          width: "65%",
+          width: "70%",
           backgroundColor: "white",
           height: "100%",
           borderRadius: "15px",
@@ -560,6 +393,182 @@ function AddPassengers() {
         }}
       >
         <MapComponent height="100%" />
+        {/* SELECTED EMPS */}
+        <Box
+          sx={{
+            ...ColFlex,
+            position: "absolute",
+            bottom: "25px",
+            right: "25px",
+            zIndex: "999",
+            width: "30%",
+            gap: "10px",
+            // border: "2px solid #212A3B",
+            p: "15px",
+            borderRadius: "15px",
+            alignItems: "flex-start",
+            backgroundColor: "white",
+            transition: "all 1s",
+          }}
+        >
+          <Typography variant="h6" fontWeight={600}>
+            Capacity {selectedPassengers?.length || 0} of{" "}
+            {(routeState?.driver as any)?.cabDetails.seatingCapacity}
+          </Typography>
+          {/* DRIVER */}
+          <Box
+            sx={{
+              ...RowFlex,
+              width: "100%",
+            }}
+          >
+            <Box
+              sx={{
+                ...RowFlex,
+                width: "80%",
+                justifyContent: "flex-start",
+                gap: "10px",
+              }}
+            >
+              <Avatar sx={{ width: "30px", height: "30px" }} />
+              <Box>
+                <Typography variant="body1" fontWeight={600}>
+                  {"Cab " +
+                    (routeState?.driver as unknown as UserTypes)?.cabDetails
+                      ?.cabNumber +
+                    " - " +
+                    (routeState?.driver as unknown as UserTypes)?.fName +
+                    " " +
+                    (routeState?.driver as unknown as UserTypes)?.lName}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: "0.7rem",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <LocalTaxi
+                    sx={{
+                      width: "12.5px",
+                      height: "12.5px",
+                      mr: "5px",
+                      color: "secondary.main",
+                    }}
+                  />
+                  {
+                    (routeState?.driver as unknown as UserTypes)?.cabDetails
+                      ?.model
+                  }
+                </Typography>
+              </Box>
+            </Box>
+            <Box sx={{ ...RowFlex, width: "20%" }}></Box>
+          </Box>
+          {/* SELECTED EMPS */}
+          {!previewMode && selectedPassengers.length > 0
+            ? selectedPassengers?.map((employee: UserTypes) => {
+                return (
+                  <Box
+                    key={employee?._id}
+                    sx={{
+                      ...RowFlex,
+                      width: "100%",
+                      pl: "25px",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        ...RowFlex,
+                        width: "80%",
+                        justifyContent: "flex-start",
+                        gap: "10px",
+                      }}
+                    >
+                      <Avatar sx={{ width: "30px", height: "30px" }} />
+                      <Box>
+                        <Typography variant="body1">
+                          {employee.fName + " " + employee.lName}
+                        </Typography>
+                        <Typography
+                          sx={{
+                            fontSize: "0.7rem",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Route
+                            sx={{
+                              width: "12.5px",
+                              height: "12.5px",
+                              mr: "5px",
+                              color: "secondary.main",
+                            }}
+                          />
+                          {employee.address}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <ButtonBase
+                      onClick={() => handleRemovePassengersFromCab(employee)}
+                      sx={{ ...RowFlex, width: "20%", borderRadius: "100px" }}
+                    >
+                      <Close
+                        sx={{
+                          backgroundColor: "error.main",
+                          borderRadius: "100px",
+                          p: 0.5,
+                          width: "35px",
+                          height: "35px",
+                          color: "white",
+                        }}
+                      />
+                    </ButtonBase>
+                  </Box>
+                );
+              })
+            : !previewMode && (
+                <Typography sx={{ m: "auto" }} variant="h6">
+                  No Passengers Added Yet !
+                </Typography>
+              )}
+          <Box sx={{ ...RowFlex, width: "100%", my: "10px" }}>
+            {previewMode ? (
+              <Box sx={{ ...RowFlex, gap: "10px", width: "100%" }}>
+                <Button
+                  onClick={HandlePreviewRoute}
+                  sx={{ borderRadius: "10px" }}
+                  color="error"
+                  endIcon={<Close />}
+                ></Button>
+                <Button
+                  disabled={
+                    status === "pending" && selectedPassengers?.length > 0
+                  }
+                  onClick={HandleCreateRoute}
+                  sx={{ borderRadius: "10px" }}
+                  fullWidth
+                  color="info"
+                  variant="contained"
+                  endIcon={<Add />}
+                >
+                  Create Route
+                </Button>
+              </Box>
+            ) : (
+              <Button
+                onClick={HandlePreviewRoute}
+                disabled={selectedPassengers?.length < 1}
+                sx={{ borderRadius: "10px" }}
+                fullWidth
+                color="info"
+                endIcon={<Visibility />}
+              >
+                Preview Route
+              </Button>
+            )}
+          </Box>
+        </Box>
       </Box>
     </Box>
   );

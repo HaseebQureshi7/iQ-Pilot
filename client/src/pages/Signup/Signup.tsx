@@ -15,11 +15,15 @@ import { useMutation } from "@tanstack/react-query";
 import SnackbarContext from "../../context/SnackbarContext";
 import { SnackBarContextTypes } from "../../types/SnackbarTypes";
 import { UserTypes } from "../../types/UserTypes";
+import UserDataContext from "../../context/UserDataContext";
+import UserContextTypes from "../../types/UserContextTypes";
 
 type roleTypes = "admin" | "driver" | "employee";
 
 function Signup() {
   const navigate = useNavigate();
+
+  const { setUserData }: UserContextTypes = useContext(UserDataContext);
 
   const [profilePic, setProfilePic] = useState("/images/logo-blue.png");
   const [currPosition, setCurrPosition] = useState<Array<number>>([0]);
@@ -41,7 +45,10 @@ function Signup() {
         severity: "success",
       });
 
-      const user: UserTypes = data.data.user;
+      const user: UserTypes = data.data.newUser;
+      setUserData?.(user);
+      // console.log("----------> ",user)
+      // console.log("----------> ",`/${user?.role}`)
       navigate(`/${user?.role}`);
     },
     onError: (err) => {

@@ -10,10 +10,12 @@ import UserDataContext from "./context/UserDataContext";
 import { UserTypes } from "./types/UserTypes";
 import useAxios from "./api/useAxios";
 import { useNavigate } from "react-router-dom";
+import SelectedEmpsContext from "./context/SelectedEmpsContext";
 
 function App() {
   const [themeMode, setThemeMode] = useState<PaletteMode>("light");
   const [userData, setUserData] = useState<UserTypes>();
+  const [selectedEmps, setSelectedEmps] = useState<Array<UserTypes>>([]);
   const navigate = useNavigate();
   const [openSnack, setOpenSnack] = useState<SnackbarTypes>({
     open: false,
@@ -49,9 +51,10 @@ function App() {
   return (
     <ThemeProvider theme={ProjectTheme(themeMode)}>
       <UserDataContext.Provider value={{ userData, setUserData }}>
-        <GlobalSnackbar value={{ openSnack, setOpenSnack }} />
-        <SnackbarContext.Provider value={{ openSnack, setOpenSnack }}>
-          {/* <Box
+        <SelectedEmpsContext.Provider value={{ selectedEmps, setSelectedEmps }}>
+          <GlobalSnackbar value={{ openSnack, setOpenSnack }} />
+          <SnackbarContext.Provider value={{ openSnack, setOpenSnack }}>
+            {/* <Box
         sx={{
           maxWidth: "100vw",
           minHeight: "100vh",
@@ -60,10 +63,11 @@ function App() {
           overflowX:"hidden"
         }}
       > */}
-          <MainRouter />
-          <ReactQueryDevtools />
-          {/* </Box> */}
-        </SnackbarContext.Provider>
+            <MainRouter />
+            <ReactQueryDevtools />
+            {/* </Box> */}
+          </SnackbarContext.Provider>
+        </SelectedEmpsContext.Provider>
       </UserDataContext.Provider>
     </ThemeProvider>
   );

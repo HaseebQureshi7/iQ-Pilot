@@ -16,7 +16,7 @@ import {
   Settings,
 } from "@mui/icons-material";
 import GlobalModal from "./Modal";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   MobileTimePicker,
   DateCalendar,
@@ -27,14 +27,18 @@ import { UserTypes } from "../../types/UserTypes";
 import { useNavigate } from "react-router-dom";
 import DateDifference from "../../utils/DateDifference";
 import dayjs from "dayjs";
+import SnackbarContext from "../../context/SnackbarContext";
+import { SnackBarContextTypes } from "../../types/SnackbarTypes";
 
 function Appbar() {
   const navigate = useNavigate();
 
+  const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
+
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [selectedTime, setSelectedTime] = useState<number>();
+  const [selectedTime, setSelectedTime] = useState<string>();
   const [selectedDate, setSelectedDate] = useState<any>(dayjs());
-  const [selectedDriver, setSelectedDriver] = useState<any>();
+  const [selectedDriver, setSelectedDriver] = useState<any>({});
   const [routeType, setRouteType] = useState<"pickup" | "drop">("pickup");
   const [office, setOffice] = useState("");
   const qc = useQueryClient();
@@ -45,8 +49,8 @@ function Appbar() {
   const handleTimeChange = (newTime: any) => {
     if (newTime) {
       const newDate = newTime;
-      setSelectedTime(newDate?.$H);
-      // console.log(newTime.$H)
+      setSelectedTime(String(newDate?.$H) + ":" + String(newDate?.$m));
+      console.log(String(newDate?.$H) + ":" + String(newDate?.$m)) 
     }
   };
 
@@ -71,8 +75,15 @@ function Appbar() {
         typeOfRoute: routeType,
         office,
       };
-      console.log(routeStateData);
+      // console.log(routeStateData);
       navigate("/admin/addPassengers", { state: routeStateData });
+    }
+    else {
+      setOpenSnack({
+        open: true,
+        message:"Fields missing! Please add all the details to proceed!",
+        severity:"warning"
+      })
     }
   }
 
@@ -200,7 +211,7 @@ function Appbar() {
                   {drivers?.length &&
                     drivers.map((driver: UserTypes) => {
                       return (
-                        <MenuItem key={driver?._id} value={driver._id}>
+                        <MenuItem key={driver?._id} value={driver as any}>
                           {driver.fName + " " + driver.lName}
                         </MenuItem>
                       );

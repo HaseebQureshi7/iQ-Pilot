@@ -8,12 +8,14 @@ import {
 import "leaflet/dist/leaflet.css";
 // import "leaflet-routing-machine";
 // import { OpenStreetMapProvider } from "leaflet-geosearch";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Icon, LatLngExpression } from "leaflet";
 import UserDataContext from "../context/UserDataContext";
 import useAxios from "../api/useAxios";
 import { useQuery } from "@tanstack/react-query";
 import { UserTypes } from "../types/UserTypes";
+import SelectedEmpsContext from "../context/SelectedEmpsContext";
+import RoutingMachine from "./RoutingMachine";
 
 type MapTypes = {
   width?: string;
@@ -32,7 +34,7 @@ const MapComponent = ({
 }: MapTypes) => {
   const [driversPosition, setDriversPosition] = useState<any>();
 
-  const { userData } = useContext(UserDataContext);
+  const { selectedEmps } = useContext(SelectedEmpsContext);
 
   const cabIcon = new Icon({
     iconUrl: "/cab-icon.png",
@@ -116,12 +118,19 @@ const MapComponent = ({
                 key={employee?._id}
                 position={employee?.pickup as LatLngExpression}
               >
-                <Tooltip className="employee-tooltip" direction="top" offset={[0, -40]} permanent>
+                <Tooltip
+                  className="employee-tooltip"
+                  direction="top"
+                  offset={[0, -40]}
+                  permanent
+                >
                   <span>{employee.fName[0] + "." + " " + employee.lName}</span>
                 </Tooltip>
               </Marker>
             );
           })}
+
+        {selectedEmps?.length && <RoutingMachine routes={[...selectedEmps]} />}
       </MapContainer>
     </div>
   );

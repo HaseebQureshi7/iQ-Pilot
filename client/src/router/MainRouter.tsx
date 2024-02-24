@@ -42,7 +42,7 @@ function MainRouter() {
         <Route path="/driver" element={<DriverDashboard />} />
       )}
       {/* EMPLOYEE ROUTER */}
-      {userData?.role === "admin" && (
+      {userData?.role === "employee" && (
         <Route path="/employee" element={<EmployeeDashboard />} />
       )}
     </Routes>

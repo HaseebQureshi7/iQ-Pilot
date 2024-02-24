@@ -1,6 +1,10 @@
-const ConvertTo12HourFormat = (hour24: number): string => {
-    if (hour24 < 0 || hour24 > 23) {
-        throw new Error('Invalid hour');
+const ConvertTo12HourFormat = (time24: string): string => {
+    const [hourStr, minuteStr] = time24.split(':');
+    const hour24 = parseInt(hourStr, 10);
+    const minute = parseInt(minuteStr, 10);
+
+    if (hour24 < 0 || hour24 > 23 || minute < 0 || minute > 59) {
+        throw new Error('Invalid time');
     }
 
     let hour12: number;
@@ -20,7 +24,7 @@ const ConvertTo12HourFormat = (hour24: number): string => {
         period = 'AM';
     }
 
-    return `${hour12} ${period}`;
+    return `${hour12}:${minute.toString().padStart(2, '0')} ${period}`;
 };
 
 export default ConvertTo12HourFormat;
