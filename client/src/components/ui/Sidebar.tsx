@@ -11,11 +11,12 @@ import { ColFlex } from "../../style_extensions/Flex";
 import { useContext } from "react";
 import UserDataContext from "../../context/UserDataContext";
 import UserContextTypes from "../../types/UserContextTypes";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface SidebarButtonPropTypes extends ButtonProps {
   text: string;
-  isActive?: boolean;
+  // isActive?: boolean;
+  link: string;
 }
 
 function Sidebar() {
@@ -23,6 +24,7 @@ function Sidebar() {
     useContext(UserDataContext);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   function Logout() {
     document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -32,9 +34,11 @@ function Sidebar() {
 
   const SideBarButton = ({
     text,
-    isActive = false,
+    // isActive = false,
+    link,
     ...rest
   }: SidebarButtonPropTypes) => {
+    const isActive = location.pathname.endsWith(link);
     return (
       <Button
         sx={{
@@ -48,6 +52,7 @@ function Sidebar() {
           pl: "25px",
         }}
         variant={isActive ? "contained" : "text"}
+        onClick={() => navigate(link)}
         {...rest}
         size="small"
       >
@@ -90,23 +95,27 @@ function Sidebar() {
       >
         <SideBarButton
           text="Dashboard"
+          link="/admin"
           startIcon={<Dashboard />}
-          isActive={true}
+          // isActive={true}
         />
         <SideBarButton
           text="Scheduled Routes"
           startIcon={<Route />}
-          isActive={false}
+          link="scheduledRoutes"
+          // isActive={false}
         />
         <SideBarButton
           text="All Cab Drivers"
+          link="allCabDrivers"
           startIcon={<LocalTaxi />}
-          isActive={false}
+          // isActive={false}
         />
         <SideBarButton
           text="All Team Members"
           startIcon={<Hail />}
-          isActive={false}
+          link="allTeamMembers"
+          // isActive={false}
         />
       </Box>
 

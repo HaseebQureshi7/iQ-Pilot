@@ -1,9 +1,13 @@
 import {
   Box,
   Button,
+  FormControl,
   FormControlLabel,
+  InputLabel,
+  MenuItem,
   Radio,
   RadioGroup,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -28,6 +32,11 @@ function Signup() {
   const [profilePic, setProfilePic] = useState("/images/logo-blue.png");
   const [currPosition, setCurrPosition] = useState<Array<number>>([0]);
   const [role, setRole] = useState<roleTypes>("employee");
+  const [department, setDepartment] = useState("");
+
+  const handleChangeDepartment = (event: any) => {
+    setDepartment(event.target.value);
+  };
 
   const signupMF = (loginData: any) => {
     return useAxios.post("auth/signup", loginData);
@@ -83,6 +92,7 @@ function Signup() {
         fName: currentTarget.firstName.value,
         lName: currentTarget.lastName.value,
         email: currentTarget.email.value,
+        department,
         phone: currentTarget.phone.value,
         address: currentTarget.address.value,
         pickup: currPosition,
@@ -99,8 +109,8 @@ function Signup() {
             : null,
         password: currentTarget.password.value,
       };
-      signupUser(signupData);
       console.log(signupData);
+      signupUser(signupData);
     }
   }
 
@@ -234,6 +244,36 @@ function Signup() {
             gap: "15px",
           }}
         >
+          <FormControl fullWidth>
+            <InputLabel
+              sx={{ lineHeight: "10px", fontSize: "0.8rem" }}
+              id="department-label"
+            >
+              Department
+            </InputLabel>
+            <Select
+              // size="small"
+              labelId="department-label"
+              id="department-select"
+              value={department}
+              onChange={handleChangeDepartment}
+              label="Department"
+            >
+              <MenuItem value={"BD"}>BD</MenuItem>
+              <MenuItem value={"BD-SD"}>BD-SD</MenuItem>
+              <MenuItem value={"BD-SES2"}>BD-SES2</MenuItem>
+              <MenuItem value={"Civil-SES2"}>Civil-SES2</MenuItem>
+              <MenuItem value={"Cyber"}>Cyber</MenuItem>
+              <MenuItem value={"L&D"}>L&D</MenuItem>
+              <MenuItem value={"Marketing"}>Marketing</MenuItem>
+              <MenuItem value={"PD"}>PD</MenuItem>
+              <MenuItem value={"PSD"}>PSD</MenuItem>
+              <MenuItem value={"S&S (HR)"}>S&S (HR)</MenuItem>
+              <MenuItem value={"S&S (IT)"}>S&S (IT)</MenuItem>
+              <MenuItem value={"S&S (OPS)"}>S&S (OPS)</MenuItem>
+              <MenuItem value={"Software"}>Software</MenuItem>
+            </Select>
+          </FormControl>
           <TextField
             required
             fullWidth

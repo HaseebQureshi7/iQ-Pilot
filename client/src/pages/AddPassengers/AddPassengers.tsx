@@ -33,6 +33,7 @@ import { RMDataPromise } from "../../components/RoutingMachine";
 import useAxios from "../../api/useAxios";
 import SnackbarContext from "../../context/SnackbarContext";
 import { SnackBarContextTypes } from "../../types/SnackbarTypes";
+import useCachedData from "../../hooks/useCachedData";
 
 // export const GetRMData = (RMData:any) => {
 //   console.log(RMData)
@@ -56,9 +57,15 @@ function AddPassengers() {
   // console.log(routeState);
   // console.log((routeState?.driver as any)?.cabDetails.seatingCapacity)
 
-  const employees: Array<UserTypes> = (
-    qc.getQueryData(["All Employees"]) as any
-  )?.data?.employees;
+  // const employees: Array<UserTypes> = (
+  //   qc.getQueryData(["All Employees"]) as any
+  // )?.data?.employees;
+  type EmployeeTypes = {
+    employees: [UserTypes];
+  };
+
+  const employeesCache: EmployeeTypes = useCachedData<any>("All Employees");
+  const employees = employeesCache?.employees;
 
   const [searchField, setSearchField] = useState<string>("");
   const [distNtime, setDistNtime] = useState<any>({});
@@ -190,7 +197,7 @@ function AddPassengers() {
       const routeData: RouteTypes = {
         ...routeState,
         passengers: passengersIds,
-        driver: driverId,
+        driver: driverId as any,
         estimatedTime: res?.totalMinutes,
         totalDistance: res?.distanceInKilometers,
       };
@@ -392,7 +399,10 @@ function AddPassengers() {
           overflow: "hidden",
         }}
       >
-        <MapComponent height="100%" />
+        <MapComponent
+          employees={selectedPassengers as [UserTypes]}
+          height="100%"
+        />
         {/* SELECTED EMPS */}
         <Box
           sx={{
