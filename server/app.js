@@ -11,8 +11,12 @@ const updateRouter = require("./routes/updateRoutes.js");
 const authRouter = require("./routes/authRoutes.js");
 const cookieParser = require("cookie-parser");
 const attendanceRoutes = require("./routes/attendanceRoutes");
+const fs = require("fs");
+const path = require("path");
+
 const app = express();
 
+app.use(express.static(path.resolve(__dirname, "static/profilePictures")));
 app.use(express.json({ limit: "2mb" }));
 app.use(
   cors({

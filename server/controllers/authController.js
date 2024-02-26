@@ -1,3 +1,4 @@
+const { processImage } = require("../middleware/imageProcessing");
 const User = require("../models/userModel");
 const AppError = require("../util/AppError");
 const { catchAsync } = require("../util/catchAsync");
@@ -20,7 +21,10 @@ const signUp = catchAsync(async (req, res) => {
     phone,
     pickup,
     cabDetails,
+    profilePicture,
   } = req.body;
+
+  const processedImage = await processImage(fName, lName, profilePicture);
   const newUser = await User.create({
     fName,
     lName,
@@ -32,6 +36,7 @@ const signUp = catchAsync(async (req, res) => {
     role,
     pickup,
     cabDetails,
+    profilePicture: processedImage,
   });
   const token = signingFunc(newUser._id);
 
