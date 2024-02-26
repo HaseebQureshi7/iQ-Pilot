@@ -17,10 +17,13 @@ import MapComponent from "../../components/Map";
 import RouteTypes from "../../types/RouteTypes";
 import ConvertTo12HourFormat from "../../utils/12HourFormat";
 import {
+  AccessTimeOutlined,
   Add,
   Cancel,
   Close,
   LocalTaxi,
+  Navigation,
+  NavigationOutlined,
   Route,
   Search,
   Visibility,
@@ -64,11 +67,19 @@ function AddPassengers() {
     employees: [UserTypes];
   };
 
+  type distNtimeTypes = {
+    distanceInKilometers: number;
+    totalMinutes: number;
+  };
+
   const employeesCache: EmployeeTypes = useCachedData<any>("All Employees");
   const employees = employeesCache?.employees;
 
   const [searchField, setSearchField] = useState<string>("");
-  const [distNtime, setDistNtime] = useState<any>({});
+  const [distNtime, setDistNtime] = useState<distNtimeTypes>({
+    distanceInKilometers: 0,
+    totalMinutes: 0,
+  });
   const [filteredEmployees, setFilteredEmployees] = useState<Array<UserTypes>>(
     []
   );
@@ -81,6 +92,7 @@ function AddPassengers() {
 
   const handleAddPassengersToCab = (newPassenger: UserTypes) => {
     // Check if the newPassenger is already present in selectedPassengers
+    setPreviewMode(false);
     if (
       selectedPassengers?.length <
       (routeState?.driver as any).cabDetails?.seatingCapacity
@@ -168,7 +180,18 @@ function AddPassengers() {
       ...passengersLatLons,
       routeState?.office === "Rangreth" ? rangreth : zaira,
     ]);
+
+    RMDataPromise.then((res: any) => {
+      setDistNtime(res);
+      console.log(res);
+    });
+
+    // setDistNtime(RMDataPromise())
   }
+
+  useEffect(() => {
+    console.log(distNtime);
+  }, [distNtime]);
 
   useEffect(() => {
     setSelectedEmps([]);
@@ -191,20 +214,20 @@ function AddPassengers() {
     const driverId: string | undefined = (routeState?.driver as any)?._id;
 
     // Creating the routeData object with passengersIds and driverId
-    RMDataPromise.then((res) => {
-      setDistNtime(res);
+    // RMDataPromise.then((res: any) => {
+    //   setDistNtime(res);
 
-      const routeData: RouteTypes = {
-        ...routeState,
-        passengers: passengersIds,
-        driver: driverId as any,
-        estimatedTime: res?.totalMinutes,
-        totalDistance: res?.distanceInKilometers,
-      };
+    const routeData: RouteTypes = {
+      ...routeState,
+      passengers: passengersIds as any,
+      driver: driverId as any,
+      estimatedTime: distNtime?.totalMinutes,
+      totalDistance: distNtime?.distanceInKilometers,
+    };
 
-      // console.log(routeData);
-      mutate(routeData);
-    });
+    console.log(routeData);
+    mutate(routeData);
+    // });
   }
 
   if (!routeState) {
@@ -403,6 +426,56 @@ function AddPassengers() {
           employees={selectedPassengers as [UserTypes]}
           height="100%"
         />
+        {/* ESTIMATED TIME & DISTANCE */}
+        <Box
+          sx={{
+            ...ColFlex,
+            gap: "15px",
+            position: "absolute",
+            alignItems: "flex-end",
+            top: "25px",
+            right: "25px",
+            zIndex: "999",
+          }}
+        >
+          {/* DISTANCE */}
+          <Box
+            sx={{
+              ...RowFlex,
+              gap: "5px",
+              backgroundColor: "primary.main",
+              padding: "10px 20px",
+              borderRadius: "15px",
+              minWidth: "10%",
+            }}
+          >
+            <NavigationOutlined
+              sx={{ color: "white", width: "30px", height: "30px" }}
+            />
+            <Typography sx={{ color: "white" }} variant="h5" fontWeight={600}>
+              {distNtime?.distanceInKilometers}{" "}
+              <span style={{ fontWeight: 500 }}>kms</span>
+            </Typography>
+          </Box>
+          {/* TIME */}
+          <Box
+            sx={{
+              ...RowFlex,
+              gap: "5px",
+              backgroundColor: "warning.main",
+              padding: "10px 20px",
+              borderRadius: "15px",
+            }}
+          >
+            <AccessTimeOutlined
+              sx={{ color: "white", width: "30px", height: "30px" }}
+            />
+            <Typography sx={{ color: "white" }} variant="h5" fontWeight={600}>
+              {distNtime?.totalMinutes}{" "}
+              <span style={{ fontWeight: 500 }}>mins</span>
+            </Typography>
+          </Box>
+        </Box>
         {/* SELECTED EMPS */}
         <Box
           sx={{

@@ -35,6 +35,7 @@ import { UserTypes } from "../../types/UserTypes";
 
 function DriverDashboard() {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  const [isRouteSelected, setIsRouteSelected] = useState<any>({});
 
   const { userData, setUserData }: UserContextTypes =
     useContext(UserDataContext);
@@ -236,12 +237,27 @@ function DriverDashboard() {
               DriverRoutes.map((route: RouteTypes) => {
                 return (
                   <Accordion
+                    expanded={isRouteSelected === route}
                     key={route?._id}
-                    sx={{ width: "100%" }}
+                    sx={{
+                      width: "100%",
+                      backgroundColor:
+                        isRouteSelected == route ? "text.primary" : "white",
+                      color:
+                        isRouteSelected == route ? "white" : "text.primary",
+                    }}
+                    onClick={() => setIsRouteSelected(route)}
                     elevation={1}
                   >
                     <AccordionSummary
-                      expandIcon={<ExpandMore />}
+                      expandIcon={
+                        <ExpandMore
+                          sx={{
+                            color:
+                              isRouteSelected == route ? "white" : "inherit",
+                          }}
+                        />
+                      }
                       aria-controls="panel1-content"
                       id="panel1-header"
                     >
@@ -276,7 +292,11 @@ function DriverDashboard() {
                           <Box
                             component={"img"}
                             sx={{ width: "100px", aspectRatio: 2.6863 }}
-                            src="/images/pickup-dark.png"
+                            src={
+                              route?.typeOfRoute === "pickup"
+                                ? "/images/pickup-light.png"
+                                : "/images/drop-light.png"
+                            }
                           />
                           <Button
                             size="large"
