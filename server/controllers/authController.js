@@ -1,4 +1,4 @@
-const { processImage } = require("../middleware/imageProcessing");
+const { processImage } = require("../util/imageProcessing");
 const User = require("../models/userModel");
 const AppError = require("../util/AppError");
 const { catchAsync } = require("../util/catchAsync");
