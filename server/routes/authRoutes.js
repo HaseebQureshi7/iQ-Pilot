@@ -4,7 +4,6 @@ const {
   login,
   validateToken,
 } = require("../controllers/authController");
-const { upload } = require("../util/imageProcessing");
 
 const router = express.Router();
 

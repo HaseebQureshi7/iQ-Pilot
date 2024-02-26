@@ -6,7 +6,6 @@ const controller = require("../controllers/attendanceController.js");
 router.route("/").post(controller.createAttendance);
 
 router
-  .get("/employees", controller.getAllEmployees)
   .get("/present-employees", controller.getPresentEmployees)
   .get("/absent-employees", controller.getAbsentEmployees);
 
