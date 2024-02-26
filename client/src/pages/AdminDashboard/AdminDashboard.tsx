@@ -3,6 +3,7 @@ import { ColFlex, RowFlex } from "./../../style_extensions/Flex";
 import MapComponent from "../../components/Map";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../api/useAxios";
+import { UserTypes } from "../../types/UserTypes";
 
 function AdminDashboard() {
   // ALL ASSIGNED ROUTES
@@ -59,6 +60,19 @@ function AdminDashboard() {
       },
     }
   );
+
+  // ALL EMPLOYEES
+  const getAllEmployees = () => {
+    return useAxios.get("users/employees");
+  };
+
+  const { data: allEmployees, status: allEmployeesStatus } = useQuery({
+    queryFn: getAllEmployees,
+    queryKey: ["All Employees"],
+    select: (data) => {
+      return data.data.employees;
+    },
+  });
 
   return (
     <Box
@@ -117,41 +131,44 @@ function AdminDashboard() {
             justifyContent: "space-evenly",
           }}
         >
-          <Box sx={{ ...ColFlex }}>
+          <Box sx={{ ...ColFlex, gap: "5px" }}>
             <Typography sx={{ fontWeight: 600 }} variant="h4">
               {allRoutesStatus === "success" ? allRoutes?.length : 0}
             </Typography>
             <Typography
               sx={{
-                width: "50%",
+                width: "100%",
                 textAlign: "center",
                 color: "text.secondary",
                 fontSize: "0.8rem",
                 lineHeight: "15px",
+                fontWeight: 600,
               }}
               variant="subtitle2"
+              color={"GrayText"}
             >
               Routes Assigned
             </Typography>
           </Box>
-          <Box sx={{ ...ColFlex }}>
+          <Box sx={{ ...ColFlex, gap: "5px" }}>
             <Typography sx={{ fontWeight: 600 }} variant="h4">
               {allCabStatus === "success" ? allCabs?.length : 0}
             </Typography>
             <Typography
               sx={{
-                width: "50%",
+                width: "100%",
                 textAlign: "center",
-                color: "text.secondary",
                 fontSize: "0.8rem",
                 lineHeight: "15px",
+                fontWeight: 600,
               }}
+              color={"GrayText"}
               variant="subtitle2"
             >
               Available Cabs
             </Typography>
           </Box>
-          <Box sx={{ ...ColFlex }}>
+          <Box sx={{ ...ColFlex, gap: "5px" }}>
             <Typography sx={{ fontWeight: 600 }} variant="h4">
               {rosteredPassengersStatus === "success"
                 ? rosteredPassengers?.length
@@ -159,18 +176,19 @@ function AdminDashboard() {
             </Typography>
             <Typography
               sx={{
-                width: "50%",
+                width: "100%",
                 textAlign: "center",
-                color: "text.secondary",
                 fontSize: "0.8rem",
                 lineHeight: "15px",
+                fontWeight: 600,
               }}
               variant="subtitle2"
+              color={"GrayText"}
             >
-              TMs Rostered
+              Rostered TMs
             </Typography>
           </Box>
-          <Box sx={{ ...ColFlex }}>
+          <Box sx={{ ...ColFlex, gap: "5px" }}>
             <Typography sx={{ fontWeight: 600 }} variant="h4">
               {pendingPassengersStatus === "success"
                 ? pendingPassengers?.length
@@ -178,15 +196,17 @@ function AdminDashboard() {
             </Typography>
             <Typography
               sx={{
-                width: "50%",
+                width: "100%",
                 textAlign: "center",
-                color: "text.secondary",
+                // color: "text.secondary",
                 fontSize: "0.8rem",
                 lineHeight: "15px",
+                fontWeight: 600,
               }}
+              color={"GrayText"}
               variant="subtitle2"
             >
-              TMs Pending
+              Pending TMs
             </Typography>
           </Box>
         </Box>
@@ -201,7 +221,13 @@ function AdminDashboard() {
           overflow: "hidden",
         }}
       >
-        <MapComponent />
+        <MapComponent
+          employees={
+            allEmployeesStatus === "success" &&
+            allEmployees?.length > 1 &&
+            allEmployees
+          }
+        />
       </Box>
     </Box>
   );

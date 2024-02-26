@@ -33,6 +33,10 @@ body::-webkit-scrollbar-track {
   /* Hide the track */
 }
 
+/* Hide Leaflet zoom control */
+.leaflet-control-zoom {
+  display: none !important;
+}
 
 .employee-tooltip {
   background-color: #9329FC;
@@ -41,5 +45,15 @@ body::-webkit-scrollbar-track {
   border-radius: 100px;
   border: 0;
   /* font-weight: bold; */
+  font-size: 0.75rem;
+}
+
+.office-tooltip {
+  background-color: #2971FC;
+  color: #fff;
+  padding: 2.5px 5px;
+  border-radius: 100px;
+  border: 0;
+  font-weight: bold;
   font-size: 0.75rem;
 }

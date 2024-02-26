@@ -124,9 +124,7 @@ exports.pendingPassengers = catchAsync(async function (req, res, next) {
 
 exports.getRouteByDriver = catchAsync(async function (req, res, next) {
   const { did } = req.params;
-  const routes = await Route.find({ driver: did });
-  if (routes.length === 0)
-    return next(new AppError("No routes assigned to the driver", 404));
+  const routes = await Route.find({ driver: did }).populate("passengers");
   res.status(200).json({ message: "Routes Found!", routes });
 });
 

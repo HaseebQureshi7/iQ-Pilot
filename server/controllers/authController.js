@@ -24,7 +24,7 @@ const signUp = catchAsync(async (req, res) => {
     profilePicture,
   } = req.body;
 
-  const processedImage = await processImage(fName, lName, profilePicture);
+  const processedImage = await processImage(fName, lName, profilePicture?.split(",")[1]);
   const newUser = await User.create({
     fName,
     lName,

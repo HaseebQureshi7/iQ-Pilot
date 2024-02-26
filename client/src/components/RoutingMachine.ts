@@ -13,23 +13,27 @@ export const RMDataPromise = new Promise<any>((resolve) => {
 });
 
 const createRoutineMachineLayer = ({ routes }: any) => {
-    const instance = L.Routing.control({
-        waypoints: [
-            ...routes
-        ],
-        show: false,
-        addWaypoints: false,
-        routeWhileDragging: true,
-        draggableWaypoints: false,
-        fitSelectedRoutes: true,
-        showAlternatives: true,
-        hide: true
-    } as CustomRoutingControlOptions);
+    const instance = L.Routing.control(
+        {
+            waypoints: [
+                ...routes
+            ],
+            show: false,
+            addWaypoints: false,
+            routeWhileDragging: true,
+            draggableWaypoints: false,
+            fitSelectedRoutes: true,
+            showAlternatives: true,
+            hide: true,
+            createMarker: function() {
+                return null; // Return null to hide the markers
+            }
+        } as CustomRoutingControlOptions);
 
     instance.on("routeselected", (e: L.Routing.RouteSelectedEvent) => {
         const distanceInKilometers: number | undefined =
             typeof e.route.summary?.totalDistance === "number"
-                ? e.route.summary.totalDistance / 1000
+                ? parseFloat((e.route.summary.totalDistance / 1000).toFixed(1))
                 : 0;
 
         const totalTimeInSeconds: number | undefined =

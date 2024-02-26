@@ -1,6 +1,9 @@
+import { UserTypes } from "./UserTypes";
+
 type RouteTypes = {
-    driver?: string;
-    passengers?: Array<string>;
+    _id?: string; 
+    driver?: UserTypes;
+    passengers?: Array<UserTypes>;
     shiftTime?: string;
     shiftDate?: string;
     office?: string;
