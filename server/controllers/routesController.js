@@ -10,8 +10,16 @@ exports.getRoute = async function (req, res, next) {
 };
 
 exports.createRoute = catchAsync(async function (req, res, next) {
-  const { driver, passengers, shiftTime, typeOfRoute, shiftDate, office, estimatedTime, totalDistance } =
-    req.body;
+  const {
+    driver,
+    passengers,
+    shiftTime,
+    typeOfRoute,
+    shiftDate,
+    office,
+    estimatedTime,
+    totalDistance,
+  } = req.body;
   const newRoute = await Route.create({
     driver,
     passengers,
@@ -55,7 +63,9 @@ exports.getAllRoutes = catchAsync(async function (req, res, next) {
 });
 
 exports.getAllNonActiveRoutes = catchAsync(async function (req, res, next) {
-  const nonActiveroutes = await Route.find({ routeStatus: "notStarted" });
+  const nonActiveroutes = await Route.find({
+    routeStatus: "notStarted",
+  }).populate("driver");
   res.status(200).json({
     message: "All Non Active Routes Found",
     count: nonActiveroutes.length,
