@@ -20,6 +20,7 @@ import RoutingMachine from "./RoutingMachine";
 type MapTypes = {
   width?: string;
   height?: string;
+  employees?: [UserTypes];
   markersArray?: [any];
   routingEnabled?: boolean;
   driversLocation?: boolean;
@@ -28,7 +29,7 @@ type MapTypes = {
 const MapComponent = ({
   width = "100%",
   height = "500px",
-  markersArray,
+  employees,
   routingEnabled = false,
   driversLocation = false,
 }: MapTypes) => {
@@ -36,14 +37,18 @@ const MapComponent = ({
 
   const { selectedEmps } = useContext(SelectedEmpsContext);
 
+  const rangreth = [33.996807, 74.79202];
+  const zaira = [34.1639168, 74.8158976];
+
   const cabIcon = new Icon({
     iconUrl: "/cab-icon.png",
-    iconSize: [40, 40], // specify the size of your icon
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
   });
 
   const empIcon = new Icon({
     iconUrl: "/images/icon-passenger.png",
-    iconSize: [40, 40], // specify the size of your icon
+    iconSize: [40, 40],
     iconAnchor: [20, 40],
   });
 
@@ -55,8 +60,9 @@ const MapComponent = ({
   // };
 
   const officeIcon = new Icon({
-    iconUrl: "/office-icon.png",
+    iconUrl: "/images/office-icon.png",
     iconSize: [40, 40], // specify the size of your icon
+    iconAnchor: [20, 40],
   });
 
   function MapController() {
@@ -74,17 +80,17 @@ const MapComponent = ({
   }
 
   // ALL PENDING PASSENGERS
-  const getAllEmployees = () => {
-    return useAxios.get("users/employees");
-  };
+  // const getAllEmployees = () => {
+  //   return useAxios.get("users/employees");
+  // };
 
-  const { data: allEmployees, status: allEmployeesStatus } = useQuery({
-    queryFn: getAllEmployees,
-    queryKey: ["All Employees"],
-    select: (data) => {
-      return data.data.employees;
-    },
-  });
+  // const { data: allEmployees, status: allEmployeesStatus } = useQuery({
+  //   queryFn: getAllEmployees,
+  //   queryKey: ["All Employees"],
+  //   select: (data) => {
+  //     return data.data.employees;
+  //   },
+  // });
 
   return (
     <div style={{ position: "relative", height, width, overflow: "hidden" }}>
@@ -109,9 +115,9 @@ const MapComponent = ({
 
         <MapController />
 
-        {allEmployeesStatus === "success" &&
-          allEmployees?.length > 1 &&
-          allEmployees.map((employee: UserTypes) => {
+        {employees &&
+          employees?.length >= 1 &&
+          employees.map((employee: UserTypes) => {
             return (
               <Marker
                 icon={empIcon}
@@ -131,6 +137,38 @@ const MapComponent = ({
           })}
 
         {selectedEmps?.length && <RoutingMachine routes={[...selectedEmps]} />}
+
+        {/* OFFICE ICONS */}
+        {/* Rangreth */}
+        <Marker
+          icon={officeIcon}
+          key={"rangrethOffice"}
+          position={rangreth as LatLngExpression}
+        >
+          <Tooltip
+            className="office-tooltip"
+            direction="top"
+            offset={[0, -40]}
+            permanent
+          >
+            <span>{"Rangreth Office"}</span>
+          </Tooltip>
+        </Marker>
+        {/* Zaira */}
+        <Marker
+          icon={officeIcon}
+          key={"zairaTowersOffice"}
+          position={zaira as LatLngExpression}
+        >
+          <Tooltip
+            className="office-tooltip"
+            direction="top"
+            offset={[0, -40]}
+            permanent
+          >
+            <span>{"Zaira Towers"}</span>
+          </Tooltip>
+        </Marker>
       </MapContainer>
     </div>
   );

@@ -14,9 +14,17 @@ const GlobalSnackbar = ({
 }: SnackbarPropTypes) => {
   return (
     <Snackbar
+    sx={{borderRadius:"100px"}}
       open={openSnack.open}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      autoHideDuration={6000}
+      autoHideDuration={4000}
+      onClick={() =>
+        setOpenSnack({
+          open: false,
+          message: "",
+          severity: "success",
+        })
+      }
       onClose={() =>
         setOpenSnack({
           open: !openSnack.open,

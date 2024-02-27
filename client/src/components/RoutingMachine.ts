@@ -8,28 +8,36 @@ interface CustomRoutingControlOptions extends L.Routing.RoutingControlOptions {
 
 let resolveRMData: ((data: any) => void) | null = null;
 
-export const RMDataPromise = new Promise<any>((resolve) => {
-    resolveRMData = resolve;
-});
+export const createNewRMDataPromise = () => {
+    return new Promise<any>((resolve) => {
+        resolveRMData = resolve;
+    });
+};
+
+export let RMDataPromise = createNewRMDataPromise(); // Initialize the first RMDataPromise
 
 const createRoutineMachineLayer = ({ routes }: any) => {
-    const instance = L.Routing.control({
-        waypoints: [
-            ...routes
-        ],
-        show: false,
-        addWaypoints: false,
-        routeWhileDragging: true,
-        draggableWaypoints: false,
-        fitSelectedRoutes: true,
-        showAlternatives: true,
-        hide: true
-    } as CustomRoutingControlOptions);
+    const instance = L.Routing.control(
+        {
+            waypoints: [
+                ...routes
+            ],
+            show: false,
+            addWaypoints: false,
+            routeWhileDragging: true,
+            draggableWaypoints: false,
+            fitSelectedRoutes: true,
+            showAlternatives: true,
+            hide: true,
+            createMarker: function () {
+                return null; // Return null to hide the markers
+            }
+        } as CustomRoutingControlOptions);
 
     instance.on("routeselected", (e: L.Routing.RouteSelectedEvent) => {
         const distanceInKilometers: number | undefined =
             typeof e.route.summary?.totalDistance === "number"
-                ? e.route.summary.totalDistance / 1000
+                ? parseFloat((e.route.summary.totalDistance / 1000).toFixed(1))
                 : 0;
 
         const totalTimeInSeconds: number | undefined =
@@ -37,18 +45,24 @@ const createRoutineMachineLayer = ({ routes }: any) => {
                 ? e.route.summary.totalTime
                 : 0;
 
-        const totalMinutes = Math.floor(totalTimeInSeconds / 60);
+        const totalMinutes = Math.round(totalTimeInSeconds / 60); // Convert seconds to minutes and round to nearest whole number
+
+        const adjustedTotalMinutes = Math.trunc(totalMinutes * 1.6); // Multiply total minutes by 1.6
 
         const RMData = {
-            totalMinutes,
+            totalMinutes: adjustedTotalMinutes,
             distanceInKilometers
         };
 
-        // Resolve the promise with RMData
+        console.log("new data ---> ", RMData)
+
+        // Resolve the current RMDataPromise with the latest RMData
         if (resolveRMData) {
             resolveRMData(RMData);
-            resolveRMData = null; // Reset to prevent further resolution
         }
+
+        // Create a new RMDataPromise for the next set of data
+        RMDataPromise = createNewRMDataPromise();
     });
 
     return instance;

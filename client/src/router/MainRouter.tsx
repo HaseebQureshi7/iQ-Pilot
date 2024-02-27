@@ -10,6 +10,9 @@ import { useContext } from "react";
 import UserDataContext from "../context/UserDataContext";
 import UserContextTypes from "../types/UserContextTypes";
 import AddPassengers from "../pages/AddPassengers/AddPassengers";
+import AllCabDrivers from "../pages/AllCabDrivers/AllCabDrivers";
+import ScheduledRoutes from "../pages/ScheduledRoutes/ScheduledRoutes";
+import AllTeamMembers from "../pages/AllTeamMembers/AllTeamMembers";
 
 function MainRouter() {
   const { userData }: UserContextTypes = useContext(UserDataContext);
@@ -31,9 +34,12 @@ function MainRouter() {
       {/* ADMIN ROUTER */}
       {userData?.role === "admin" && (
         <>
-        <Route path="/admin" element={<AdminDashboardLayout />}>
-          <Route index element={<AdminDashboard />} />
-        </Route>
+          <Route path="/admin" element={<AdminDashboardLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="allCabDrivers" element={<AllCabDrivers />} />
+            <Route path="scheduledRoutes" element={<ScheduledRoutes />} />
+            <Route path="allTeamMembers" element={<AllTeamMembers />} />
+          </Route>
           <Route path="admin/addPassengers" element={<AddPassengers />} />
         </>
       )}
