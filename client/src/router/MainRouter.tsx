@@ -13,6 +13,9 @@ import AddPassengers from "../pages/AddPassengers/AddPassengers";
 import AllCabDrivers from "../pages/AllCabDrivers/AllCabDrivers";
 import ScheduledRoutes from "../pages/ScheduledRoutes/ScheduledRoutes";
 import AllTeamMembers from "../pages/AllTeamMembers/AllTeamMembers";
+import StartRoute from "../pages/StartRoute/StartRoute";
+import DriverLayout from "./../layouts/DriverLayout";
+import RouteCompleted from "../pages/RouteCompleted/RouteCompleted";
 
 function MainRouter() {
   const { userData }: UserContextTypes = useContext(UserDataContext);
@@ -45,7 +48,13 @@ function MainRouter() {
       )}
       {/* DRIVER ROUTER */}
       {userData?.role === "driver" && (
-        <Route path="/driver" element={<DriverDashboard />} />
+        <>
+          <Route path="/driver" element={<DriverLayout />}>
+            <Route index element={<DriverDashboard />} />
+            <Route path="startRoute" element={<StartRoute />} />
+            <Route path="routeCompleted" element={<RouteCompleted />} />
+          </Route>
+        </>
       )}
       {/* EMPLOYEE ROUTER */}
       {userData?.role === "employee" && (

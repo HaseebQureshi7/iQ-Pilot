@@ -32,12 +32,20 @@ const routeSchema = new mongoose.Schema(
     estimatedTime: {
       type: Number,
     },
+    fuelConsumed: {
+      type: Number,
+      default: 0
+    },
+    costOfTravel: {
+      type: Number,
+      default: 0
+    },
     routeStatus: {
       type: String,
       enum: ["notStarted", "inProgress", "completed"],
       default: "notStarted",
     },
-    totalDistance: {type: Number},
+    totalDistance: { type: Number },
   },
   { timestamps: true }
 );

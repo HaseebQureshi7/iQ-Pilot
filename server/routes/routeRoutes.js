@@ -40,6 +40,6 @@ router
   .route("/:id")
   .get(protect, restrictTo("admin"), getRoute)
   .delete(protect, restrictTo("admin"), deleteRoute)
-  .patch(protect, restrictTo("admin"), updateRoute);
+  .patch(protect, restrictTo("admin", "driver"), updateRoute);
 
 module.exports = router;

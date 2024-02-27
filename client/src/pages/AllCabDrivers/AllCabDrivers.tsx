@@ -20,6 +20,7 @@ import { DeleteForever, EditLocation, MoreHoriz, Search, Visibility } from "@mui
 import useCachedData from "./../../hooks/useCachedData";
 import { UserTypes } from "../../types/UserTypes";
 import { useState } from "react";
+import baseURL from "../../utils/baseURL";
 
 type driverTypes = {
   drivers: [UserTypes];
@@ -87,7 +88,7 @@ function AllCabDrivers() {
                           gap: "10px",
                         }}
                       >
-                        <Avatar sx={{ width: "30px", height: "30px" }} />
+                        <Avatar src={baseURL + driver?.profilePicture} sx={{ width: "30px", height: "30px" }} />
                         {driver.fName + " " + driver.lName}
                       </Box>
                     </TableCell>

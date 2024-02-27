@@ -26,6 +26,7 @@ import {
 import useCachedData from "./../../hooks/useCachedData";
 import { UserTypes } from "../../types/UserTypes";
 import { useState } from "react";
+import baseURL from "../../utils/baseURL";
 
 type driverTypes = {
   employees: [UserTypes];
@@ -94,7 +95,7 @@ function AllTeamMembers() {
                           gap: "10px",
                         }}
                       >
-                        <Avatar sx={{ width: "30px", height: "30px" }} />
+                        <Avatar src={baseURL + employee?.profilePicture} sx={{ width: "30px", height: "30px" }} />
                         {employee.fName + " " + employee.lName}
                       </Box>
                     </TableCell>

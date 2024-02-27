@@ -24,6 +24,7 @@ import {
   LocalTaxi,
   Navigation,
   NavigationOutlined,
+  Remove,
   Route,
   Search,
   Visibility,
@@ -75,6 +76,10 @@ function AddPassengers() {
   const employeesCache: EmployeeTypes = useCachedData<any>("All Employees");
   const employees = employeesCache?.employees;
 
+  useEffect(() => {
+    setFilteredEmployees(employees);
+  }, [employees]);
+
   const [searchField, setSearchField] = useState<string>("");
   const [distNtime, setDistNtime] = useState<distNtimeTypes>({
     distanceInKilometers: 0,
@@ -90,6 +95,13 @@ function AddPassengers() {
   >([]);
   const [previewMode, setPreviewMode] = useState<boolean>(false);
 
+  const isPassengerInRoute = (newPassenger: UserTypes) => {
+    const isAlreadyAdded = selectedPassengers.some(
+      (passenger) => passenger._id === newPassenger._id
+    );
+    return isAlreadyAdded;
+  };
+
   const handleAddPassengersToCab = (newPassenger: UserTypes) => {
     // Check if the newPassenger is already present in selectedPassengers
     setPreviewMode(false);
@@ -97,12 +109,12 @@ function AddPassengers() {
       selectedPassengers?.length <
       (routeState?.driver as any).cabDetails?.seatingCapacity
     ) {
-      const isAlreadyAdded = selectedPassengers.some(
-        (passenger) => passenger._id === newPassenger._id
-      );
+      // const isAlreadyAdded = selectedPassengers.some(
+      //   (passenger) => passenger._id === newPassenger._id
+      // );
 
       // If not already added, add the newPassenger
-      if (!isAlreadyAdded) {
+      if (!isPassengerInRoute(newPassenger)) {
         setSelectedPassengers((prevPassengers) => [
           ...prevPassengers,
           newPassenger,
@@ -130,6 +142,14 @@ function AddPassengers() {
   // Function to handle changes in the department selection
   const handleChangeDepartment = (event: any) => {
     setDepartment(event.target.value);
+    // setFilteredEmployees
+    setFilteredEmployees(() =>
+      filteredEmployees?.filter(
+        (employee: UserTypes) =>
+          employee.department?.toLocaleLowerCase() ==
+          event.target.value?.toLocaleLowerCase()
+      )
+    );
   };
 
   const SearchEmployees = (e: any) => {
@@ -145,6 +165,12 @@ function AddPassengers() {
       setFilteredEmployees(filteredEmps);
     }
     return;
+  };
+
+  const handleClearFilterAndSearch = () => {
+    setSearchField("");
+    setFilteredEmployees(employees);
+    setDepartment("");
   };
 
   const createRouteMF = (routeData: any) => {
@@ -317,7 +343,7 @@ function AddPassengers() {
                 backgroundColor: "text.primary",
                 color: "white",
               }}
-              onClick={() => setSearchField("")}
+              onClick={handleClearFilterAndSearch}
               color="primary"
               variant="contained"
               endIcon={<Cancel />}
@@ -339,61 +365,74 @@ function AddPassengers() {
                 onChange={handleChangeDepartment}
                 label="Department"
               >
-                <MenuItem value={"Software"}>Software</MenuItem>
-                <MenuItem value={"PD"}>PD</MenuItem>
                 <MenuItem value={"BD"}>BD</MenuItem>
-                <MenuItem value={"SES2"}>SES2</MenuItem>
-                <MenuItem value={"HR"}>HR</MenuItem>
-                <MenuItem value={"IT"}>IT</MenuItem>
+                <MenuItem value={"BD-SD"}>BD-SD</MenuItem>
+                <MenuItem value={"BD-SES2"}>BD-SES2</MenuItem>
+                <MenuItem value={"Civil-SES2"}>Civil-SES2</MenuItem>
+                <MenuItem value={"Cyber"}>Cyber</MenuItem>
+                <MenuItem value={"L&D"}>L&D</MenuItem>
+                <MenuItem value={"Marketing"}>Marketing</MenuItem>
+                <MenuItem value={"PD"}>PD</MenuItem>
+                <MenuItem value={"PSD"}>PSD</MenuItem>
+                <MenuItem value={"S&S (HR)"}>S&S (HR)</MenuItem>
+                <MenuItem value={"S&S (IT)"}>S&S (IT)</MenuItem>
+                <MenuItem value={"S&S (OPS)"}>S&S (OPS)</MenuItem>
+                <MenuItem value={"Software"}>Software</MenuItem>
               </Select>
             </FormControl>
           </Box>
         </Box>
         {/* L -3 */}
-        <Box sx={{ ...ColFlex, width: "100%", gap: "10px" }}>
-          {filteredEmployees.length >= 1 &&
-            searchField?.length > 0 &&
-            filteredEmployees?.slice(0, 8).map((employee) => {
-              return (
-                <Box key={employee?._id} sx={{ ...RowFlex, width: "100%" }}>
-                  <Box
-                    sx={{
-                      ...RowFlex,
-                      width: "80%",
-                      justifyContent: "flex-start",
-                      gap: "10px",
-                    }}
-                  >
-                    <Avatar sx={{ width: "30px", height: "30px" }} />
-                    <Box>
-                      <Typography variant="body1">
-                        {employee.fName + " " + employee.lName}
-                      </Typography>
-                      <Typography
-                        sx={{
-                          fontSize: "0.7rem",
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Route
-                          sx={{
-                            width: "12.5px",
-                            height: "12.5px",
-                            mr: "5px",
-                            color: "secondary.main",
-                          }}
-                        />
-                        {employee.address}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Box sx={{ ...RowFlex, width: "20%" }}>
-                    <ButtonBase
-                      onClick={() => handleAddPassengersToCab(employee)}
-                      sx={{ borderRadius: "100px" }}
+        <Box
+          sx={{
+            ...ColFlex,
+            justifyContent: "flex-start",
+            width: "100%",
+            height: "100%",
+            overflowY: "scroll",
+            gap: "10px",
+          }}
+        >
+          {filteredEmployees?.map((employee) => {
+            return (
+              <Box key={employee?._id} sx={{ ...RowFlex, width: "100%" }}>
+                <Box
+                  sx={{
+                    ...RowFlex,
+                    width: "80%",
+                    justifyContent: "flex-start",
+                    gap: "10px",
+                  }}
+                >
+                  <Avatar sx={{ width: "30px", height: "30px" }} />
+                  <Box>
+                    <Typography variant="body1">
+                      {employee.fName + " " + employee.lName}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: "0.7rem",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
                     >
+                      <Route
+                        sx={{
+                          width: "12.5px",
+                          height: "12.5px",
+                          mr: "5px",
+                          color: "secondary.main",
+                        }}
+                      />
+                      {employee.address}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ ...RowFlex, width: "20%" }}>
+                  <ButtonBase sx={{ borderRadius: "100px" }}>
+                    {!isPassengerInRoute(employee) ? (
                       <Add
+                        onClick={() => handleAddPassengersToCab(employee)}
                         sx={{
                           backgroundColor: "primary.main",
                           borderRadius: "100px",
@@ -403,11 +442,24 @@ function AddPassengers() {
                           color: "white",
                         }}
                       />
-                    </ButtonBase>
-                  </Box>
+                    ) : (
+                      <Remove
+                        onClick={() => handleRemovePassengersFromCab(employee)}
+                        sx={{
+                          backgroundColor: "error.main",
+                          borderRadius: "100px",
+                          p: 0.5,
+                          width: "40px",
+                          height: "40px",
+                          color: "white",
+                        }}
+                      />
+                    )}
+                  </ButtonBase>
                 </Box>
-              );
-            })}
+              </Box>
+            );
+          })}
         </Box>
       </Box>
       {/* RS */}

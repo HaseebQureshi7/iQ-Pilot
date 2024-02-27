@@ -36,15 +36,32 @@ exports.createRoute = catchAsync(async function (req, res, next) {
 });
 
 exports.updateRoute = async function (req, res, next) {
+  const options = {
+    method: 'GET',
+    headers: {
+      'X-RapidAPI-Key': '4e406fae10msha520bc48a25c07ap1ec728jsn72c0fe096524',
+      'X-RapidAPI-Host': 'indian-fuel.p.rapidapi.com'
+    }
+  };
+
+  // const response = await fetch('https://indian-fuel.p.rapidapi.com/fuel/data', options);
+  // const data = await response.json();
+
+  // const petrol = data?.length ? data?.filter((state) => state.city == "Srinagar")[0].petrol : 100
+  const petrol = 100
+
   const { id } = req.params;
-  const user = await Route.findByIdAndUpdate({ _id: id }, req.body, {
+  const { fuelConsumed } = req.body
+  let costOfTravel = Math.round(fuelConsumed * petrol)
+
+  const route = await Route.findByIdAndUpdate({ _id: id }, { ...req.body, costOfTravel }, {
     new: true,
     runValidators: true,
   });
-  if (!user) {
-    return res.status(404).json({ msg: "No user found!" });
+  if (!route) {
+    return res.status(404).json({ msg: "No route found!" });
   }
-  res.status(200).json({ msg: "User Updated!", user });
+  res.status(200).json({ msg: "Route Updated!", route });
 };
 
 exports.deleteRoute = catchAsync(async function (req, res, next) {

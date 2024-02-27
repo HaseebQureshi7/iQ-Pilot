@@ -1,11 +1,13 @@
 import { UserTypes } from "./UserTypes";
 
 type RouteTypes = {
-    _id?: string; 
+    _id?: string;
     driver?: UserTypes;
     passengers?: Array<UserTypes>;
     shiftTime?: string;
     shiftDate?: string;
+    costOfTravel?: number;
+    fuelConsumed?: number;
     office?: string;
     typeOfRoute?: 'pickup' | 'drop';
     estimatedTime?: number;
