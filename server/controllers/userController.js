@@ -43,7 +43,7 @@ exports.updateUser = catchAsync(async function (req, res) {
 });
 
 exports.getAllEmployees = catchAsync(async (req, res, next) => {
-  const employees = await User.find({ role: { $ne: "driver" } });
+  const employees = await User.find({ role: { $ne: "driver" } }).sort("fName");
 
   if (!employees) {
     return next(new AppError("No Employees Found", 404));

@@ -89,7 +89,9 @@ exports.getRosteredPassenger = catchAsync(async function (req, res, next) {
   const passengers = await User.find({
     _id: { $in: passengersIDS },
     role: { $ne: "driver" },
-  }).select("-cabDetails");
+  })
+    .select("-cabDetails")
+    .sort("fName");
   res.status(200).json({
     message: "Passenger Roastered!",
     totalRoastered: passengers.length,
