@@ -34,8 +34,21 @@ const getAbsentEmployees = catchAsync(async (req, res, next) => {
   res.status(200).json({ message: "Absent Employees", absentEmployees });
 });
 
+const getAttendanceByRoute = catchAsync(async (req, res, next) => {
+  const { rid } = req.params;
+
+  const routes = await Attendance.find({ ofRoute: rid }).populate([
+    "Driver",
+    "ofEmployee",
+    "ofRoute",
+  ]);
+
+  res.status(200).json({ message: "Route Attendance", routes });
+});
+
 module.exports = {
   createAttendance,
   getPresentEmployees,
   getAbsentEmployees,
+  getAttendanceByRoute,
 };
