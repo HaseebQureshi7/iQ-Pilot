@@ -4,6 +4,7 @@ import {
   Button,
   Divider,
   Drawer,
+  Modal,
   Typography,
 } from "@mui/material";
 import { PageFlex, ColFlex, RowFlex } from "./../../style_extensions/Flex";
@@ -16,6 +17,7 @@ import UserContextTypes from "../../types/UserContextTypes";
 
 function EmployeeDashboard() {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState<boolean>(false);
 
   const { userData, setUserData }: UserContextTypes =
     useContext(UserDataContext);
@@ -118,6 +120,7 @@ function EmployeeDashboard() {
             sx={{ ...ColFlex, width: "100%", gap: "15px", marginTop: "auto" }}
           >
             <Button
+              onClick={() => setOpenModal(!openModal)}
               sx={{
                 backgroundColor: "error",
                 borderRadius: "10px",
@@ -146,6 +149,66 @@ function EmployeeDashboard() {
           </Box>
         </Box>
       </Drawer>
+
+      {/* SCHEDULE A ROUTE MODAL */}
+      <Modal
+        sx={{ ...ColFlex, width: "100%", height: "100%" }}
+        open={openModal}
+        onClose={() => setOpenModal(!openModal)}
+      >
+        <Box
+          sx={{
+            ...ColFlex,
+            p: "30px 10px",
+            // minHeight: "40vh",
+            width: { xs: "90%", lg: "75%" },
+            borderRadius: "15px",
+            gap: 5,
+            alignItems: "center",
+            textAlign: "center",
+            justifyContent: "center",
+            backgroundColor: "background.default",
+          }}
+        >
+          {/* DANGER POPUP */}
+          <Box
+            sx={{
+              ...ColFlex,
+              width: "100%",
+              textAlign: "center",
+              gap: "15px",
+              marginTop: "15px",
+            }}
+          >
+            <Typography variant="h5" fontWeight={600} sx={{ mb: "10px" }}>
+              Are you in Danger ?
+            </Typography>
+            <Warning
+              sx={{ color: "error.main", width: "50px", height: "50px" }}
+            />
+            <Typography
+              sx={{ width: "60%" }}
+              variant="body1"
+              color={"GrayText"}
+              fontWeight={600}
+            >
+              The admin will be alerted instantly!
+            </Typography>
+            <Button
+              sx={{
+                backgroundColor: "error.main",
+                color: "background.default",
+                padding: "10px 50px",
+                borderRadius: "100px",
+              }}
+              variant="contained"
+              size="large"
+            >
+              Send Alert
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
 
       {/* Profile Picture */}
       <Avatar
