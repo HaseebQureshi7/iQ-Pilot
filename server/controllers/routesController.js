@@ -2,6 +2,7 @@ const Route = require("../models/routeModel");
 const User = require("../models/userModel.js");
 const AppError = require("../util/AppError.js");
 const { catchAsync } = require("../util/catchAsync.js");
+const timeFormatter = require("../util/TimeFormatter.js");
 
 exports.getRoute = async function (req, res, next) {
   const { id } = req.params;
@@ -37,27 +38,31 @@ exports.createRoute = catchAsync(async function (req, res, next) {
 
 exports.updateRoute = async function (req, res, next) {
   const options = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'X-RapidAPI-Key': '4e406fae10msha520bc48a25c07ap1ec728jsn72c0fe096524',
-      'X-RapidAPI-Host': 'indian-fuel.p.rapidapi.com'
-    }
+      "X-RapidAPI-Key": "4e406fae10msha520bc48a25c07ap1ec728jsn72c0fe096524",
+      "X-RapidAPI-Host": "indian-fuel.p.rapidapi.com",
+    },
   };
 
   // const response = await fetch('https://indian-fuel.p.rapidapi.com/fuel/data', options);
   // const data = await response.json();
 
   // const petrol = data?.length ? data?.filter((state) => state.city == "Srinagar")[0].petrol : 100
-  const petrol = 100
+  const petrol = 100;
 
   const { id } = req.params;
-  const { fuelConsumed } = req.body
-  let costOfTravel = Math.round(fuelConsumed * petrol)
+  const { fuelConsumed } = req.body;
+  let costOfTravel = Math.round(fuelConsumed * petrol);
 
-  const route = await Route.findByIdAndUpdate({ _id: id }, { ...req.body, costOfTravel }, {
-    new: true,
-    runValidators: true,
-  });
+  const route = await Route.findByIdAndUpdate(
+    { _id: id },
+    { ...req.body, costOfTravel },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
   if (!route) {
     return res.status(404).json({ msg: "No route found!" });
   }
@@ -149,10 +154,16 @@ exports.getRouteByDriver = catchAsync(async function (req, res, next) {
 
 exports.getEmployeeRoute = catchAsync(async function (req, res, next) {
   const { eid } = req.params;
+
+  const formattedTime = timeFormatter(new Date());
+
   const routes = await Route.find({
     routeStatus: "notStarted",
     passengers: { $in: eid },
+    shiftTime: { $gte: formattedTime },
   })
+    .sort({ shiftTime: 1 })
+    .limit(1)
     .populate({
       path: "passengers",
       select: "-cabDetails",
@@ -161,7 +172,8 @@ exports.getEmployeeRoute = catchAsync(async function (req, res, next) {
       path: "driver",
       select: "cabDetails fName lName phone profilePicture",
     });
-  if (routes.length === 0)
-    return next(new AppError("No routes assigned to the employee", 404));
-  res.status(200).json({ message: "Employee Route Found!", routes });
+
+  res
+    .status(200)
+    .json({ message: "Employee Route Found!", count: routes.length, routes });
 });
