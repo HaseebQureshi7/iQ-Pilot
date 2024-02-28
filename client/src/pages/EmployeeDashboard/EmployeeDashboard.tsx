@@ -336,7 +336,7 @@ function EmployeeDashboard() {
             }}
           >
             <Typography variant="h4">
-              {routeData?.driver?.cabDetails?.model}
+              {routeData?.driver?.cabDetails?.model?.toUpperCase()}
             </Typography>
             <Box
               sx={{
