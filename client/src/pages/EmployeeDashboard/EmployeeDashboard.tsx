@@ -19,10 +19,13 @@ import { useQuery } from "@tanstack/react-query";
 import RouteTypes from "../../types/RouteTypes";
 import SelectedEmpsContext from "../../context/SelectedEmpsContext";
 import { UserTypes } from "../../types/UserTypes";
+import CalculateArrivalTimes from "./../../utils/ReturnPickupTime";
+import ConvertTo12HourFormat from "../../utils/12HourFormat";
 
 function EmployeeDashboard() {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [passengerPickupNumber, setPassengerPickupNumber] = useState<number>();
 
   const { userData, setUserData }: UserContextTypes =
     useContext(UserDataContext);
@@ -59,6 +62,11 @@ function EmployeeDashboard() {
       );
       console.log(passengersLatLons);
       setSelectedEmps(passengersLatLons);
+
+      const numberInList = passengers?.filter((passenger, index) => {
+        passenger?._id === userData?._id && setPassengerPickupNumber(index + 1);
+      });
+      // console.log(numberInList);
     }
   }, [routeData]);
 
@@ -272,95 +280,121 @@ function EmployeeDashboard() {
             py: "5px",
           }}
         >
-          <Typography sx={{ color: "white", fontWeight: 500 }} variant="h4">
-            Arrival - <span style={{ fontWeight: 600 }}>1:34 PM</span>
-          </Typography>
-        </Box>
-        {/* Driver & Cab */}
-        <Box
-          sx={{
-            ...RowFlex,
-            justifyContent: "space-between",
-            width: "100%",
-            px: "25px",
-          }}
-        >
-          <Box sx={{ ...ColFlex, alignItems: "flex-start" }}>
-            <Typography variant="h6">
-              {routeData?.driver?.fName + " " + routeData?.driver?.lName}
-            </Typography>
-            <Typography variant="body2">
-              CAB NUMBER -{" "}
+          {routeData ? (
+            <Typography sx={{ color: "white", fontWeight: 500 }} variant="h4">
+              Arrival -{" "}
               <span style={{ fontWeight: 600 }}>
-                {routeData?.driver?.cabDetails?.cabNumber}
+                {ConvertTo12HourFormat(
+                  CalculateArrivalTimes(
+                    routeData?.shiftTime as string,
+                    routeData?.estimatedTime as number,
+                    routeData?.passengers?.length as number,
+                    passengerPickupNumber ? passengerPickupNumber : 1
+                  )
+                )}
               </span>
             </Typography>
-          </Box>
-          <Avatar />
-        </Box>
-        <Divider sx={{ width: "75%" }} />
-        {/* Cab Details */}
-        <Box
-          sx={{
-            ...ColFlex,
-            alignItems: "flex-start",
-            width: "100%",
-            px: "25px",
-          }}
-        >
-          <Typography variant="h4">
-            {routeData?.driver?.cabDetails?.model}
-          </Typography>
-          <Box
-            sx={{ ...RowFlex, width: "100%", justifyContent: "space-between" }}
-          >
-            <Typography variant="h6">
-              {routeData?.driver?.cabDetails?.numberPlate}
+          ) : (
+            <Typography sx={{ color: "white", fontWeight: 500 }} variant="h5">
+              No Cab Assigned ; {"("}
             </Typography>
-            <Box sx={{ ...RowFlex, gap: "10px" }}>
-              <Box
-                sx={{
-                  width: "15px",
-                  height: "15px",
-                  borderRadius: "100px",
-                  backgroundColor: routeData?.driver?.cabDetails?.color,
-                  border: "2px solid black",
-                }}
-              ></Box>
+          )}
+        </Box>
+        {/* Driver & Cab */}
+        {routeData && (
+          <Box
+            sx={{
+              ...RowFlex,
+              justifyContent: "space-between",
+              width: "100%",
+              px: "25px",
+            }}
+          >
+            <Box sx={{ ...ColFlex, alignItems: "flex-start" }}>
+              <Typography variant="h6">
+                {routeData?.driver?.fName + " " + routeData?.driver?.lName}
+              </Typography>
               <Typography variant="body2">
-                {routeData?.driver?.cabDetails?.color}
+                CAB NUMBER -{" "}
+                <span style={{ fontWeight: 600 }}>
+                  {routeData?.driver?.cabDetails?.cabNumber}
+                </span>
               </Typography>
             </Box>
+            <Avatar />
           </Box>
-        </Box>
+        )}
+        <Divider sx={{ width: "75%" }} />
+        {/* Cab Details */}
+        {routeData && (
+          <Box
+            sx={{
+              ...ColFlex,
+              alignItems: "flex-start",
+              width: "100%",
+              px: "25px",
+            }}
+          >
+            <Typography variant="h4">
+              {routeData?.driver?.cabDetails?.model}
+            </Typography>
+            <Box
+              sx={{
+                ...RowFlex,
+                width: "100%",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography variant="h6">
+                {routeData?.driver?.cabDetails?.numberPlate}
+              </Typography>
+              <Box sx={{ ...RowFlex, gap: "10px" }}>
+                <Box
+                  sx={{
+                    width: "15px",
+                    height: "15px",
+                    borderRadius: "100px",
+                    backgroundColor: routeData?.driver?.cabDetails?.color,
+                    border: "2px solid black",
+                  }}
+                ></Box>
+                <Typography variant="body2">
+                  {routeData?.driver?.cabDetails?.color}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+        )}
         {/* EMP Actions */}
-        <Box sx={{ ...RowFlex, width: "100%", gap: "10px", px: "15px" }}>
-          <Button
-            sx={{
-              backgroundColor: "text.primary",
-              borderRadius: "10px",
-              color: "white",
-              padding: "15px",
-              width: "60%",
-            }}
-            startIcon={<Close />}
-          >
-            CANCEL CAB
-          </Button>
-          <Button
-            href={`tel:${routeData?.driver?.phone}`}
-            sx={{
-              backgroundColor: "success.light",
-              borderRadius: "10px",
-              color: "white",
-              padding: "15px",
-              width: "40%",
-            }}
-            startIcon={<Call />}
-          >
-            CALL
-          </Button>
-        </Box>
+        {routeData && (
+          <Box sx={{ ...RowFlex, width: "100%", gap: "10px", px: "15px" }}>
+            <Button
+              sx={{
+                backgroundColor: "text.primary",
+                borderRadius: "10px",
+                color: "white",
+                padding: "15px",
+                width: "60%",
+              }}
+              startIcon={<Close />}
+            >
+              CANCEL CAB
+            </Button>
+            <Button
+              href={`tel:${routeData?.driver?.phone}`}
+              sx={{
+                backgroundColor: "success.light",
+                borderRadius: "10px",
+                color: "white",
+                padding: "15px",
+                width: "40%",
+              }}
+              startIcon={<Call />}
+            >
+              CALL
+            </Button>
+          </Box>
+        )}
       </Box>
       <MapComponent
         height="100%"

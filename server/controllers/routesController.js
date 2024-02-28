@@ -164,7 +164,7 @@ exports.getEmployeeRoute = catchAsync(async function (req, res, next) {
   const routes = await Route.find({
     routeStatus: "notStarted",
     passengers: { $in: eid },
-    shiftTime: { $gte: formattedTime },
+    shiftTime: { $gt: formattedTime },
   })
     .sort({ shiftTime: 1 })
     .limit(1)

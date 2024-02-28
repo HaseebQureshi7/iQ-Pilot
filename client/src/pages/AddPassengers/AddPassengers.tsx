@@ -602,7 +602,7 @@ function AddPassengers() {
           </Box>
           {/* SELECTED EMPS */}
           {!previewMode && selectedPassengers.length > 0
-            ? selectedPassengers?.map((employee: UserTypes) => {
+            ? selectedPassengers?.map((employee: UserTypes, index: number) => {
                 return (
                   <Box
                     key={employee?._id}
@@ -620,6 +620,23 @@ function AddPassengers() {
                         gap: "10px",
                       }}
                     >
+                      <Avatar
+                        sx={{
+                          width: "25px",
+                          height: "25px",
+                          backgroundColor: "rgba(10.59%, 38.04%, 98.82%, 0.8)",
+                        }}
+                      >
+                        <Typography fontWeight={600} variant="body1">
+                          {index + 1}
+                        </Typography>
+                      </Avatar>{" "}
+                      <Typography
+                        sx={{ color: "rgba(10.59%, 38.04%, 98.82%, 0.8)" }}
+                        variant="body1"
+                      >
+                        -{">"}
+                      </Typography>
                       <Avatar sx={{ width: "30px", height: "30px" }} />
                       <Box>
                         <Typography variant="body1">
