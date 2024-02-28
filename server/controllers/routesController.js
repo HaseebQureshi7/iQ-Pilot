@@ -52,8 +52,12 @@ exports.updateRoute = async function (req, res, next) {
   const petrol = 100;
 
   const { id } = req.params;
+
   const { fuelConsumed } = req.body;
-  let costOfTravel = Math.round(fuelConsumed * petrol);
+  let costOfTravel;
+  costOfTravel = fuelConsumed > 0 ? Math.round(fuelConsumed * petrol) : 0;
+
+  console.log(costOfTravel)
 
   const route = await Route.findByIdAndUpdate(
     { _id: id },
@@ -62,7 +66,7 @@ exports.updateRoute = async function (req, res, next) {
       new: true,
       runValidators: true,
     }
-  );
+  ).populate("passengers");
   if (!route) {
     return res.status(404).json({ msg: "No route found!" });
   }

@@ -10,10 +10,15 @@ import {
 import { PageFlex, ColFlex, RowFlex } from "./../../style_extensions/Flex";
 import MapComponent from "../../components/Map";
 import { Call, Close, Person, Settings, Warning } from "@mui/icons-material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserDataContext from "../../context/UserDataContext";
 import UserContextTypes from "../../types/UserContextTypes";
+import useAxios from "../../api/useAxios";
+import { useQuery } from "@tanstack/react-query";
+import RouteTypes from "../../types/RouteTypes";
+import SelectedEmpsContext from "../../context/SelectedEmpsContext";
+import { UserTypes } from "../../types/UserTypes";
 
 function EmployeeDashboard() {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
@@ -22,6 +27,8 @@ function EmployeeDashboard() {
   const { userData, setUserData }: UserContextTypes =
     useContext(UserDataContext);
 
+  const { selectedEmps, setSelectedEmps } = useContext(SelectedEmpsContext);
+
   const navigate = useNavigate();
 
   function Logout() {
@@ -29,6 +36,31 @@ function EmployeeDashboard() {
     setUserData?.(undefined);
     navigate("/");
   }
+
+  const getEmployeeRoute = () => {
+    return useAxios.get(`route/employeeRoute/${userData?._id}`);
+  };
+
+  const { data: routeData } = useQuery({
+    queryFn: getEmployeeRoute,
+    queryKey: ["Route Attendance"],
+    select: (data: any) => {
+      return data.data.routes[0] as RouteTypes;
+    },
+  });
+
+  console.log(routeData);
+  useEffect(() => {
+    const passengers = routeData?.passengers;
+
+    if (passengers) {
+      const passengersLatLons: string[] = passengers.map(
+        (passenger: any) => passenger.pickup
+      );
+      console.log(passengersLatLons);
+      setSelectedEmps(passengersLatLons);
+    }
+  }, [routeData]);
 
   return (
     <Box sx={{ ...PageFlex, height: "100vh" }}>
@@ -254,9 +286,14 @@ function EmployeeDashboard() {
           }}
         >
           <Box sx={{ ...ColFlex, alignItems: "flex-start" }}>
-            <Typography variant="h6">MOHAMMAD SALEEM</Typography>
+            <Typography variant="h6">
+              {routeData?.driver?.fName + " " + routeData?.driver?.lName}
+            </Typography>
             <Typography variant="body2">
-              CAB NUMBER - <span style={{ fontWeight: 600 }}>D</span>
+              CAB NUMBER -{" "}
+              <span style={{ fontWeight: 600 }}>
+                {routeData?.driver?.cabDetails?.cabNumber}
+              </span>
             </Typography>
           </Box>
           <Avatar />
@@ -271,22 +308,28 @@ function EmployeeDashboard() {
             px: "25px",
           }}
         >
-          <Typography variant="h4">SUZUKI EECO</Typography>
+          <Typography variant="h4">
+            {routeData?.driver?.cabDetails?.model}
+          </Typography>
           <Box
             sx={{ ...RowFlex, width: "100%", justifyContent: "space-between" }}
           >
-            <Typography variant="h6">JK01 AR 9220</Typography>
+            <Typography variant="h6">
+              {routeData?.driver?.cabDetails?.numberPlate}
+            </Typography>
             <Box sx={{ ...RowFlex, gap: "10px" }}>
               <Box
                 sx={{
                   width: "15px",
                   height: "15px",
                   borderRadius: "100px",
-                  backgroundColor: "silver",
+                  backgroundColor: routeData?.driver?.cabDetails?.color,
                   border: "2px solid black",
                 }}
               ></Box>
-              <Typography variant="body2">Silver</Typography>
+              <Typography variant="body2">
+                {routeData?.driver?.cabDetails?.color}
+              </Typography>
             </Box>
           </Box>
         </Box>
@@ -305,6 +348,7 @@ function EmployeeDashboard() {
             CANCEL CAB
           </Button>
           <Button
+            href={`tel:${routeData?.driver?.phone}`}
             sx={{
               backgroundColor: "success.light",
               borderRadius: "10px",
@@ -318,7 +362,10 @@ function EmployeeDashboard() {
           </Button>
         </Box>
       </Box>
-      <MapComponent height="100%" />
+      <MapComponent
+        height="100%"
+        employees={routeData?.passengers as [UserTypes]}
+      />
     </Box>
   );
 }

@@ -63,18 +63,24 @@ function DriverDashboard() {
   const { mutate: UpdateRoute, status: UpdateRouteStatus } = useMutation({
     mutationFn: updateRouteStatus,
     onSuccess: (data) => {
-      console.log(data.data);
+      // console.log(data.data);
       setOpenSnack({
         open: true,
         message: `Route was started!`,
         severity: "info",
       });
+      const route = data.data?.route;
+      navigate("startRoute", { state: route });
+      console.log(route);
+    },
+    onError: (err) => {
+      console.log(err);
     },
   });
 
   function HandleStartRoute(route: RouteTypes) {
     UpdateRoute(route);
-    navigate("startRoute", { state: route });
+    // console.log(route);
   }
 
   return (
