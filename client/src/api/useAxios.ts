@@ -1,8 +1,9 @@
 import axios from "axios";
+import baseURL from "../utils/baseURL";
 
 const useAxios = axios.create({
-    baseURL: "http://localhost:5000/api/v1/",
-    withCredentials: true
-})
+  baseURL: `${baseURL}api/v1/`,
+  withCredentials: true,
+});
 
-export default useAxios
+export default useAxios;
