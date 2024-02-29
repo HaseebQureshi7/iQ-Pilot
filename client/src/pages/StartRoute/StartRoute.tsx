@@ -31,6 +31,7 @@ import { SnackBarContextTypes } from "../../types/SnackbarTypes";
 import SelectedEmpsContext from "../../context/SelectedEmpsContext";
 import { io } from "socket.io-client";
 import baseURL from "../../utils/baseURL";
+import { LatLngExpression } from "leaflet";
 
 type modalPropTypes = {
   openModal: boolean;
@@ -402,7 +403,7 @@ function StartRoute() {
         </Typography>
       </Box>
       {/* MAP */}
-      <MapComponent height="50%" employees={route?.passengers as [UserTypes]} />
+      <MapComponent height="50%" employees={route?.passengers as [UserTypes]} driverOnFocus={myLocation as LatLngExpression}/>
       {/* PASSENGER BOX */}
       <Box
         sx={{

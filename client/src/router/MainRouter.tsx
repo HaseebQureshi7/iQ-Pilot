@@ -38,7 +38,7 @@ function MainRouter() {
       {userData?.role === "admin" && (
         <>
           <Route path="/admin" element={<AdminDashboardLayout />}>
-            <Route index element={<AdminDashboard />} />
+            <Route index element={<FadeIn><AdminDashboard /></FadeIn>} />
             <Route path="allCabDrivers" element={<AllCabDrivers />} />
             <Route path="scheduledRoutes" element={<ScheduledRoutes />} />
             <Route path="allTeamMembers" element={<AllTeamMembers />} />

@@ -26,6 +26,7 @@ type MapTypes = {
   SOS?: any;
   center?: LatLngExpression;
   zoom?: number;
+  driverOnFocus?: any;
 };
 
 const MapComponent = ({
@@ -36,6 +37,7 @@ const MapComponent = ({
   SOS,
   center = [34.0836, 74.7973],
   zoom = 12,
+  driverOnFocus
 }: MapTypes) => {
   const [driversPosition, setDriversPosition] = useState<any>();
 
@@ -103,7 +105,7 @@ const MapComponent = ({
         </button> */}
       <MapContainer
         style={{ height: "100%", width: "100%" }}
-        center={center}
+        center={driverOnFocus?.length ? driverOnFocus : center}
         zoom={zoom}
       >
         <TileLayer
@@ -118,6 +120,22 @@ const MapComponent = ({
         {/* <Marker icon={officeIcon} position={[34.0837559, 74.8229426]} /> */}
 
         <MapController />
+
+        {driverOnFocus?.length &&
+              <Marker
+                icon={cabIcon}
+                position={driverOnFocus as LatLngExpression}
+              >
+                <Tooltip
+                  className="driver-tooltip"
+                  direction="top"
+                  offset={[0, -40]}
+                  permanent
+                >
+                  <span>You</span>
+                </Tooltip>
+              </Marker>
+              }
 
         {activeDrivers?.length &&
           activeDrivers?.map((drivers) => {
