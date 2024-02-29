@@ -57,3 +57,13 @@ body::-webkit-scrollbar-track {
   font-weight: bold;
   font-size: 0.75rem;
 }
+
+.driver-tooltip {
+  background-color: #FC2929;
+  color: #fff;
+  padding: 2.5px 5px;
+  border-radius: 100px;
+  border: 0;
+  font-weight: bold;
+  font-size: 0.75rem;
+}

@@ -22,16 +22,14 @@ type MapTypes = {
   height?: string;
   employees?: [UserTypes];
   markersArray?: [any];
-  routingEnabled?: boolean;
-  driversLocation?: boolean;
+  activeDrivers?: [any];
 };
 
 const MapComponent = ({
   width = "100%",
   height = "500px",
   employees,
-  routingEnabled = false,
-  driversLocation = false,
+  activeDrivers,
 }: MapTypes) => {
   const [driversPosition, setDriversPosition] = useState<any>();
 
@@ -41,7 +39,7 @@ const MapComponent = ({
   const zaira = [34.1639168, 74.8158976];
 
   const cabIcon = new Icon({
-    iconUrl: "/cab-icon.png",
+    iconUrl: "/images/cab-icon.png",
     iconSize: [40, 40],
     iconAnchor: [20, 40],
   });
@@ -114,6 +112,26 @@ const MapComponent = ({
         {/* <Marker icon={officeIcon} position={[34.0837559, 74.8229426]} /> */}
 
         <MapController />
+
+        {activeDrivers?.length &&
+          activeDrivers?.map((drivers) => {
+            return (
+              <Marker
+                icon={cabIcon}
+                key={drivers?.name}
+                position={drivers?.location as LatLngExpression}
+              >
+                <Tooltip
+                  className="driver-tooltip"
+                  direction="top"
+                  offset={[0, -40]}
+                  permanent
+                >
+                  <span>{drivers.name}</span>
+                </Tooltip>
+              </Marker>
+            );
+          })}
 
         {employees &&
           employees?.length >= 1 &&

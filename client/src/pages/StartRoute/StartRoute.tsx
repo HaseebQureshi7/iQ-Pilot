@@ -29,15 +29,66 @@ import AttendanceTypes from "../../types/attendanceTypes";
 import SnackbarContext from "../../context/SnackbarContext";
 import { SnackBarContextTypes } from "../../types/SnackbarTypes";
 import SelectedEmpsContext from "../../context/SelectedEmpsContext";
+import { io } from "socket.io-client";
+import baseURL from "../../utils/baseURL";
 
 type modalPropTypes = {
   openModal: boolean;
   currentPassenger?: UserTypes;
 };
 
+const socket = io(baseURL);
+
 function StartRoute() {
   const location = useLocation();
   const route: RouteTypes = location.state;
+
+  const { userData, setUserData }: UserContextTypes =
+    useContext(UserDataContext);
+
+  const [myLocation, setMyLocation] = useState<Array<number>>([]);
+
+  useEffect(() => {
+    if (myLocation.length == 2) {
+      const driverData = {
+        name: userData?.fName[0] + ". " + userData?.lName,
+        location: myLocation,
+      };
+
+      console.log(myLocation);
+
+      socket.emit("live-drivers", driverData);
+    }
+  }, [socket, myLocation]);
+
+  useEffect(() => {
+    if (userData?.role === "driver") {
+      navigator.geolocation.getCurrentPosition(() => {
+        // setDriversPosition([pos.coords.latitude, pos.coords.longitude]);
+        console.log("Permission granted");
+      });
+
+      // MAKE AN ERROR ALERT IF THE PERMISSION WAS REJECTED!
+
+      // ASK FOR THE LOCATION PERMISSION FIRST !
+
+      const watchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          // console.log("new pos : ",pos.coords);
+          setMyLocation([pos.coords.latitude, pos.coords.longitude]);
+        },
+        (error) => {
+          console.error("Error getting location:", error.message);
+        },
+        {
+          enableHighAccuracy: true,
+          // timeout: 5000,
+          maximumAge: 0,
+        }
+      );
+      return () => navigator.geolocation.clearWatch(watchId);
+    }
+  }, []);
 
   const rangreth = [33.996807, 74.79202];
   const zaira = [34.1639168, 74.8158976];

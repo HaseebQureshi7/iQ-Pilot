@@ -3,9 +3,47 @@ import { ColFlex, RowFlex } from "./../../style_extensions/Flex";
 import MapComponent from "../../components/Map";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../api/useAxios";
-import { UserTypes } from "../../types/UserTypes";
+import { io } from "socket.io-client";
+import baseURL from "../../utils/baseURL";
+import { useEffect, useState } from "react";
+
+const socket = io(baseURL);
 
 function AdminDashboard() {
+  const [activeDrivers, setActiveDrivers] = useState<any>([]);
+
+  // function extractLocations(input: any) {
+  //   input.map((item: any) => {
+  //     // Access the first element of the inner array and then access its 'location' property
+  //     item.map((data: any) =>
+  //       setActiveDrivers((prevState: any) => [...prevState, data.location])
+  //     );
+  //   });
+  //   // return locations;
+  // }
+
+  const extractDriverData = (rawData: any) => {
+    const mapTest = new Map(rawData);
+    // console.log(mapTest)
+
+    const mapValues = Array.from(mapTest.values());
+
+    console.log(mapValues);
+    setActiveDrivers(mapValues);
+  };
+
+  useEffect(() => {
+    console.log(activeDrivers);
+  }, [activeDrivers]);
+
+  useEffect(() => {
+    socket.on("live-drivers", (data) => {
+      console.log("Live Drivers ------->  ", data);
+      const locations = data;
+      extractDriverData(locations);
+    });
+  }, [socket]);
+
   // ALL ASSIGNED ROUTES
   const getAllAssignedRoutesQF = () => {
     return useAxios.get("route/nonActive");
@@ -227,6 +265,7 @@ function AdminDashboard() {
             allEmployees?.length > 1 &&
             allEmployees
           }
+          activeDrivers={activeDrivers}
         />
       </Box>
     </Box>
