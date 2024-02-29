@@ -23,6 +23,9 @@ type MapTypes = {
   employees?: [UserTypes];
   markersArray?: [any];
   activeDrivers?: [any];
+  SOS?: any;
+  center?: LatLngExpression;
+  zoom?: number;
 };
 
 const MapComponent = ({
@@ -30,6 +33,9 @@ const MapComponent = ({
   height = "500px",
   employees,
   activeDrivers,
+  SOS,
+  center = [34.0836, 74.7973],
+  zoom = 12,
 }: MapTypes) => {
   const [driversPosition, setDriversPosition] = useState<any>();
 
@@ -97,8 +103,8 @@ const MapComponent = ({
         </button> */}
       <MapContainer
         style={{ height: "100%", width: "100%" }}
-        center={[34.0836, 74.7973]}
-        zoom={12}
+        center={center}
+        zoom={zoom}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -153,6 +159,23 @@ const MapComponent = ({
               </Marker>
             );
           })}
+
+        {SOS && (
+          <Marker
+            icon={empIcon}
+            key={SOS?.name}
+            position={SOS?.location as LatLngExpression}
+          >
+            <Tooltip
+              className="employee-tooltip"
+              direction="top"
+              offset={[0, -40]}
+              permanent
+            >
+              <span>{SOS.sosFrom}</span>
+            </Tooltip>
+          </Marker>
+        )}
 
         {selectedEmps?.length && <RoutingMachine routes={[...selectedEmps]} />}
 

@@ -8,6 +8,7 @@ import {
   Route,
   Flag,
   Call,
+  WrongLocation,
 } from "@mui/icons-material";
 import {
   Box,
@@ -227,27 +228,37 @@ function DriverDashboard() {
                                   </Typography>
                                 </Box>
                               </Box>
-                              <ButtonBase
-                                component={"a"}
-                                href={`tel:${passenger?.phone}`}
-                                // onClick={() => handleRemovePassengersFromCab(employee)}
-                                sx={{
-                                  ...RowFlex,
-                                  width: "20%",
-                                  borderRadius: "100px",
-                                }}
-                              >
-                                <Call
+                              {!passenger?.cancelCab ? (
+                                <ButtonBase
+                                  component={"a"}
+                                  href={`tel:${passenger?.phone}`}
+                                  // onClick={() => handleRemovePassengersFromCab(employee)}
                                   sx={{
-                                    backgroundColor: "success.main",
+                                    ...RowFlex,
+                                    width: "20%",
                                     borderRadius: "100px",
-                                    p: 1,
-                                    width: "35px",
-                                    height: "35px",
-                                    color: "white",
+                                  }}
+                                >
+                                  <Call
+                                    sx={{
+                                      backgroundColor: "success.main",
+                                      borderRadius: "100px",
+                                      p: 1,
+                                      width: "35px",
+                                      height: "35px",
+                                      color: "white",
+                                    }}
+                                  />
+                                </ButtonBase>
+                              ) : (
+                                <WrongLocation
+                                  sx={{
+                                    color: "error.main",
+                                    mx: "10%",
+                                    m: "auto",
                                   }}
                                 />
-                              </ButtonBase>
+                              )}
                             </Box>
                           );
                         })}

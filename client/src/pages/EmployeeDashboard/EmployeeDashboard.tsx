@@ -15,17 +15,26 @@ import { useNavigate } from "react-router-dom";
 import UserDataContext from "../../context/UserDataContext";
 import UserContextTypes from "../../types/UserContextTypes";
 import useAxios from "../../api/useAxios";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import RouteTypes from "../../types/RouteTypes";
 import SelectedEmpsContext from "../../context/SelectedEmpsContext";
 import { UserTypes } from "../../types/UserTypes";
 import CalculateArrivalTimes from "./../../utils/ReturnPickupTime";
 import ConvertTo12HourFormat from "../../utils/12HourFormat";
+import baseURL from "../../utils/baseURL";
+import { io } from "socket.io-client";
+import SnackbarContext from "../../context/SnackbarContext";
+import { SnackBarContextTypes } from "../../types/SnackbarTypes";
+
+const socket = io(baseURL);
 
 function EmployeeDashboard() {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [passengerPickupNumber, setPassengerPickupNumber] = useState<number>();
+
+  const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
+
 
   const { userData, setUserData }: UserContextTypes =
     useContext(UserDataContext);
@@ -34,11 +43,26 @@ function EmployeeDashboard() {
 
   const navigate = useNavigate();
 
+  const qc = useQueryClient();
+
   function Logout() {
     document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     setUserData?.(undefined);
     navigate("/");
   }
+
+  const SendEmergencyAlert = () => {
+    let sosData;
+    navigator.geolocation.getCurrentPosition((pos) => {
+      sosData = {
+        sosFrom: userData?.fName + " " + userData?.lName,
+        phone: userData?.phone,
+        location: [pos.coords.latitude, pos.coords.longitude],
+      };
+      socket.emit("SOS", sosData);
+      // console.log(sosData);
+    });
+  };
 
   const getEmployeeRoute = () => {
     return useAxios.get(`route/employeeRoute/${userData?._id}`);
@@ -51,6 +75,28 @@ function EmployeeDashboard() {
       return data.data.routes[0] as RouteTypes;
     },
   });
+
+  const cancelCabMF = () => {
+    return useAxios.patch(`users/cancel-cab`);
+  };
+
+  const { mutate: cancelCab } = useMutation({
+    mutationFn: cancelCabMF,
+    onSuccess: (data) => {
+      qc.invalidateQueries("Route Attendance" as never);
+      // console.log(data.data.newUser);
+      setUserData?.(data.data.newUser as UserTypes);
+      setOpenSnack({
+        open: true,
+        message: data.data.newUser.cancelCab ? "Cab service cancelled!" : "Cab service resumed",
+        severity: data.data.newUser.cancelCab ? "warning" : 'success'
+      })
+    },
+  });
+
+  function HandleCancelCab() {
+    cancelCab();
+  }
 
   console.log(routeData);
   useEffect(() => {
@@ -190,7 +236,7 @@ function EmployeeDashboard() {
         </Box>
       </Drawer>
 
-      {/* SCHEDULE A ROUTE MODAL */}
+      {/* SOS MODAL */}
       <Modal
         sx={{ ...ColFlex, width: "100%", height: "100%" }}
         open={openModal}
@@ -235,6 +281,7 @@ function EmployeeDashboard() {
               The admin will be alerted instantly!
             </Typography>
             <Button
+              onClick={() => SendEmergencyAlert()}
               sx={{
                 backgroundColor: "error.main",
                 color: "background.default",
@@ -369,8 +416,9 @@ function EmployeeDashboard() {
         {routeData && (
           <Box sx={{ ...RowFlex, width: "100%", gap: "10px", px: "15px" }}>
             <Button
+              onClick={HandleCancelCab}
               sx={{
-                backgroundColor: "text.primary",
+                backgroundColor: userData?.cancelCab ? "info.main" : "error.main",
                 borderRadius: "10px",
                 color: "white",
                 padding: "15px",
@@ -378,7 +426,7 @@ function EmployeeDashboard() {
               }}
               startIcon={<Close />}
             >
-              CANCEL CAB
+              {userData?.cancelCab ? "RESUME CAB" : "CANCEL CAB"}
             </Button>
             <Button
               href={`tel:${routeData?.driver?.phone}`}

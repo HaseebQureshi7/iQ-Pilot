@@ -72,15 +72,25 @@ exports.getAllDrivers = catchAsync(async (req, res) => {
 exports.cancelCab = catchAsync(async (req, res, next) => {
   const userID = req.user._id;
 
-  await User.findByIdAndUpdate(
-    userID,
-    { cancelCab: true },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  const user = await User.findById(userID)
+
+  user.cancelCab = !user.cancelCab;
+  await user.save()
+
+  // if (user?.cancelCab === false) {
+  //   await User.findByIdAndUpdate(userID, {
+  //     cancelCab: true
+  //   }, { runValidators: true, new: true })
+  // }
+  // else {
+  //   await User.findByIdAndUpdate(userID, {
+  //     cancelCab: false
+  //   }, { runValidators: true, new: true })
+  // }
+
+  // await User.findByIdAndUpdate(userID, req.body, { new: true, runValidators: true });
   res.status(200).json({
-    message: "Cab Cancelled",
+    message: "Cab Cancellation Successful!",
+    newUser: user
   });
 });

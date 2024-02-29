@@ -102,7 +102,7 @@ function AllTeamMembers() {
                     <TableCell align="center">{employee.email}</TableCell>
                     <TableCell align="center">{employee.address}</TableCell>
                     <TableCell align="center">
-                      {!employee.onLeave ? "Active" : "On Leave"}
+                      {!employee.cancelCab ? "Active" : "On Leave"}
                     </TableCell>
                     <TableCell align="center">
                       <MoreHoriz

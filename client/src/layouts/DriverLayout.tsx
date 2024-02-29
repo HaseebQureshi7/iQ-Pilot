@@ -2,10 +2,13 @@ import { Close, Person, Settings, Warning, Logout } from "@mui/icons-material";
 import { Drawer, Avatar, Typography, Button, Box, Modal } from "@mui/material";
 import { PageFlex, ColFlex, RowFlex } from "../style_extensions/Flex";
 import baseURL from "../utils/baseURL";
-import { ReactNode, useContext, useState } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import UserDataContext from "../context/UserDataContext";
 import { Outlet, useNavigate } from "react-router-dom";
 import UserContextTypes from "../types/UserContextTypes";
+import { io } from "socket.io-client";
+
+const socket = io(baseURL);
 
 function DriverLayout() {
   const { userData, setUserData }: UserContextTypes =
@@ -15,12 +18,26 @@ function DriverLayout() {
   const navigate = useNavigate();
 
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [currPos, setCurrPos] = useState<Array<number>>([]);
 
   function Logout() {
     document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     setUserData?.(undefined);
     navigate("/");
   }
+
+  const SendEmergencyAlert = () => {
+    let sosData;
+    navigator.geolocation.getCurrentPosition((pos) => {
+      sosData = {
+        sosFrom: userData?.fName + " " + userData?.lName,
+        phone: userData?.phone,
+        location: [pos.coords.latitude, pos.coords.longitude],
+      };
+      socket.emit("SOS", sosData);
+      // console.log(sosData);
+    });
+  };
 
   return (
     <Box sx={{ ...PageFlex, height: "100vh" }}>
@@ -154,7 +171,7 @@ function DriverLayout() {
           pb: "20px",
         }}
       >
-        {/* SCHEDULE A ROUTE MODAL */}
+        {/* SOS MODAL */}
         <Modal
           sx={{ ...ColFlex, width: "100%", height: "100%" }}
           open={openModal}
@@ -199,6 +216,7 @@ function DriverLayout() {
                 The admin will be alerted instantly!
               </Typography>
               <Button
+                onClick={() => SendEmergencyAlert()}
                 sx={{
                   backgroundColor: "error.main",
                   color: "background.default",

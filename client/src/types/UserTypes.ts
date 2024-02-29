@@ -9,10 +9,6 @@ export interface UserTypes {
     password?: string;
     profilePicture?: string;
     pickup?: [number, number];
-    onLeave?: {
-        numDays: 4 | 12 | number;
-        startDate: Date;
-    }; // Optional field
     cabDetails?: {
         cabNumber: string;
         seatingCapacity: number;
@@ -21,5 +17,6 @@ export interface UserTypes {
         color: string;
     }; // Optional field
     address?: string;
+    cancelCab?: boolean;
     createdAt?: Date;
 }

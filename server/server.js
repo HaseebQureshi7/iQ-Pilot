@@ -41,10 +41,15 @@ io.on("connection", (socket) => {
     // io.emit("live-drivers", liveDrivers)
   })
 
+  socket.on("SOS", (sosDetails) => {
+    console.log(sosDetails)
+    io.emit("SOS", sosDetails)
+  })
+
   socket.on("disconnect", () => {
     liveDrivers.delete(socket.id)
-    console.log(socket.id ,"A user disconnected");
-    console.log(liveDrivers ,"New Map");
+    console.log(socket.id, "A user disconnected");
+    console.log(liveDrivers, "New Map");
   });
 }
 )
