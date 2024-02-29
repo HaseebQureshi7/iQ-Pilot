@@ -57,7 +57,7 @@ exports.updateRoute = async function (req, res, next) {
   let costOfTravel;
   costOfTravel = fuelConsumed > 0 ? Math.round(fuelConsumed * petrol) : 0;
 
-  console.log(costOfTravel)
+  console.log(costOfTravel);
 
   const route = await Route.findByIdAndUpdate(
     { _id: id },
@@ -181,3 +181,36 @@ exports.getEmployeeRoute = catchAsync(async function (req, res, next) {
     .status(200)
     .json({ message: "Employee Route Found!", count: routes.length, routes });
 });
+
+// exports.cancelCab = catchAsync(async (req, res, next) => {
+//   const user = req.user;
+//   const formattedTime = timeFormatter(new Date());
+//   let currentUserRoute = await Route.find({ passengers: user._id });
+//   currentUserRoute.filter((route) => route.shiftTime >= formattedTime);
+
+//   console.log(currentUserRoute);
+//   // const indexToRemove = currentUserRoute[0].passengers.findIndex(
+//   //   (passenger) => passenger._id === user._id
+//   // );
+
+//   // if (indexToRemove !== -1) {
+//   //   const removedUser = currentUserRoute[0].passengers.splice(
+//   //     indexToRemove,
+//   //     1
+//   //   )[0];
+//   //   console.log(removedUser);
+//   //   const newRoute = await Route.findByIdAndUpdate(
+//   //     currentUserRoute[0]._id,
+//   //     { passengers: currentUserRoute[0].passengers },
+//   //     {
+//   //       new: true,
+//   //       runValidators: true,
+//   //     }
+//   //   );
+//   //   console.log(newRoute);
+//   // } else {
+//   //   console.log("User not found in passengers array.");
+//   // }
+
+//   // console.log(updatedPassengers);
+// });

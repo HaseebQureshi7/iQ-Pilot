@@ -10,6 +10,7 @@ const {
   getRouteByDriver,
   getAllNonActiveRoutes,
   getEmployeeRoute,
+  cancelCab,
 } = require("../controllers/routesController");
 const { restrictTo, protect } = require("../middleware/authMiddleware.js");
 

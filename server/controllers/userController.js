@@ -69,3 +69,18 @@ exports.getAllDrivers = catchAsync(async (req, res) => {
     drivers,
   });
 });
+exports.cancelCab = catchAsync(async (req, res, next) => {
+  const userID = req.user._id;
+
+  await User.findByIdAndUpdate(
+    userID,
+    { cancelCab: true },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.status(200).json({
+    message: "Cab Cancelled",
+  });
+});

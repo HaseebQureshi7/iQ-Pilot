@@ -6,6 +6,7 @@ const {
   updateUser,
   getAllEmployees,
   getAllDrivers,
+  cancelCab,
 } = require("../controllers/userController");
 const { restrictTo, protect } = require("../middleware/authMiddleware.js");
 
@@ -13,6 +14,7 @@ const router = express.Router();
 
 router.route("/employees").get(protect, restrictTo("admin"), getAllEmployees);
 router.route("/drivers").get(protect, restrictTo("admin"), getAllDrivers);
+router.route("/cancel-cab").patch(protect, cancelCab);
 
 router.route("/").get(protect, restrictTo("admin"), getAllUsers);
 

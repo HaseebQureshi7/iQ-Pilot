@@ -11,7 +11,6 @@ const updateRouter = require("./routes/updateRoutes.js");
 const authRouter = require("./routes/authRoutes.js");
 const cookieParser = require("cookie-parser");
 const attendanceRoutes = require("./routes/attendanceRoutes");
-const fs = require("fs");
 const path = require("path");
 
 const app = express();

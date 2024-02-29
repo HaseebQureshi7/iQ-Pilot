@@ -76,6 +76,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please provide your address"],
     },
+    cancelCab: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
