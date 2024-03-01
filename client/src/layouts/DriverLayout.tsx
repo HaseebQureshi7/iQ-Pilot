@@ -29,10 +29,15 @@ function DriverLayout() {
 
   function Logout() {
     // document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    useAxios.post("logout", {}).then(() => {
-      setUserData?.(undefined);
-      navigate("/");
-    });
+    useAxios
+      .post("auth/logout", {})
+      .then((res) => {
+        setUserData?.(undefined);
+        navigate("/");
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+    // });
   }
 
   const SendEmergencyAlert = () => {
