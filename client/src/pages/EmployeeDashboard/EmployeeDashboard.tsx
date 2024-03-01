@@ -1,3 +1,4 @@
+import { Call, Close, Person, Settings, Warning } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -7,24 +8,23 @@ import {
   Modal,
   Typography,
 } from "@mui/material";
-import { PageFlex, ColFlex, RowFlex } from "./../../style_extensions/Flex";
-import MapComponent from "../../components/Map";
-import { Call, Close, Person, Settings, Warning } from "@mui/icons-material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import UserDataContext from "../../context/UserDataContext";
-import UserContextTypes from "../../types/UserContextTypes";
+import { io } from "socket.io-client";
 import useAxios from "../../api/useAxios";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import RouteTypes from "../../types/RouteTypes";
+import MapComponent from "../../components/Map";
 import SelectedEmpsContext from "../../context/SelectedEmpsContext";
+import SnackbarContext from "../../context/SnackbarContext";
+import UserDataContext from "../../context/UserDataContext";
+import RouteTypes from "../../types/RouteTypes";
+import { SnackBarContextTypes } from "../../types/SnackbarTypes";
+import UserContextTypes from "../../types/UserContextTypes";
 import { UserTypes } from "../../types/UserTypes";
-import CalculateArrivalTimes from "./../../utils/ReturnPickupTime";
 import ConvertTo12HourFormat from "../../utils/12HourFormat";
 import baseURL from "../../utils/baseURL";
-import { io } from "socket.io-client";
-import SnackbarContext from "../../context/SnackbarContext";
-import { SnackBarContextTypes } from "../../types/SnackbarTypes";
+import { ColFlex, PageFlex, RowFlex } from "./../../style_extensions/Flex";
+import CalculateArrivalTimes from "./../../utils/ReturnPickupTime";
 
 const socket = io(baseURL);
 

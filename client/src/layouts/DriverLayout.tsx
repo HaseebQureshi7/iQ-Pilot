@@ -1,12 +1,12 @@
-import { Close, Person, Settings, Warning, Logout } from "@mui/icons-material";
-import { Drawer, Avatar, Typography, Button, Box, Modal } from "@mui/material";
-import { PageFlex, ColFlex, RowFlex } from "../style_extensions/Flex";
-import baseURL from "../utils/baseURL";
-import { ReactNode, useContext, useEffect, useState } from "react";
-import UserDataContext from "../context/UserDataContext";
+import { Close, Person, Settings, Warning } from "@mui/icons-material";
+import { Avatar, Box, Button, Drawer, Modal, Typography } from "@mui/material";
+import { useContext, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import UserContextTypes from "../types/UserContextTypes";
 import { io } from "socket.io-client";
+import UserDataContext from "../context/UserDataContext";
+import { ColFlex, PageFlex, RowFlex } from "../style_extensions/Flex";
+import UserContextTypes from "../types/UserContextTypes";
+import baseURL from "../utils/baseURL";
 
 const socket = io(baseURL);
 
@@ -18,7 +18,7 @@ function DriverLayout() {
   const navigate = useNavigate();
 
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [currPos, setCurrPos] = useState<Array<number>>([]);
+  // const [currPos, setCurrPos] = useState<Array<number>>([]);
 
   function Logout() {
     document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";

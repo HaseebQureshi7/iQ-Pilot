@@ -1,4 +1,10 @@
 import {
+  AddCircleOutline,
+  ArrowForward,
+  Notifications,
+  Settings,
+} from "@mui/icons-material";
+import {
   Box,
   Button,
   FormControl,
@@ -8,27 +14,20 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { RowFlex, ColFlex } from "./../../style_extensions/Flex";
 import {
-  AddCircleOutline,
-  ArrowForward,
-  Notifications,
-  Settings,
-} from "@mui/icons-material";
-import GlobalModal from "./Modal";
-import { useContext, useEffect, useState } from "react";
-import {
-  MobileTimePicker,
   DateCalendar,
-  DatePicker,
+  MobileTimePicker
 } from "@mui/x-date-pickers";
 import { useQueryClient } from "@tanstack/react-query";
-import { UserTypes } from "../../types/UserTypes";
-import { useNavigate } from "react-router-dom";
-import DateDifference from "../../utils/DateDifference";
 import dayjs from "dayjs";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SnackbarContext from "../../context/SnackbarContext";
 import { SnackBarContextTypes } from "../../types/SnackbarTypes";
+import { UserTypes } from "../../types/UserTypes";
+import DateDifference from "../../utils/DateDifference";
+import { ColFlex, RowFlex } from "./../../style_extensions/Flex";
+import GlobalModal from "./Modal";
 
 function Appbar() {
   const navigate = useNavigate();

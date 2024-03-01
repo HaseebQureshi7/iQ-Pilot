@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Landing from "../pages/Landing";
 import Signup from "../pages/Signup/Signup";
 import { FadeIn } from "../animations/transitions";
@@ -38,7 +38,14 @@ function MainRouter() {
       {userData?.role === "admin" && (
         <>
           <Route path="/admin" element={<AdminDashboardLayout />}>
-            <Route index element={<FadeIn><AdminDashboard /></FadeIn>} />
+            <Route
+              index
+              element={
+                <FadeIn>
+                  <AdminDashboard />
+                </FadeIn>
+              }
+            />
             <Route path="allCabDrivers" element={<AllCabDrivers />} />
             <Route path="scheduledRoutes" element={<ScheduledRoutes />} />
             <Route path="allTeamMembers" element={<AllTeamMembers />} />

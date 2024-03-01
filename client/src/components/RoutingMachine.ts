@@ -1,5 +1,5 @@
-import L from "leaflet";
 import { createControlComponent } from "@react-leaflet/core";
+import L from "leaflet";
 import "leaflet-routing-machine";
 
 interface CustomRoutingControlOptions extends L.Routing.RoutingControlOptions {

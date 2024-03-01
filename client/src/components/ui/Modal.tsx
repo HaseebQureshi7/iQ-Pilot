@@ -1,7 +1,7 @@
 import { Clear } from "@mui/icons-material";
 import { Box, Divider, Modal, Typography } from "@mui/material";
-import isXSmall from "../../utils/isXSmall";
 import { ReactNode } from "react";
+import isXSmall from "../../utils/isXSmall";
 import { ColFlex } from './../../style_extensions/Flex';
 
 type ModalPropTypes = {

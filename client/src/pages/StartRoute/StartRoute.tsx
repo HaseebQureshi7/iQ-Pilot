@@ -1,4 +1,11 @@
 import {
+  Call,
+  Close,
+  Done,
+  Hail,
+  Route
+} from "@mui/icons-material";
+import {
   Avatar,
   Box,
   Button,
@@ -6,32 +13,24 @@ import {
   Modal,
   Typography,
 } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ColFlex, RowFlex } from "./../../style_extensions/Flex";
-import MapComponent from "../../components/Map";
-import ConvertTo12HourFormat from "./../../utils/12HourFormat";
-import RouteTypes from "../../types/RouteTypes";
-import { UserTypes } from "../../types/UserTypes";
-import {
-  Call,
-  Close,
-  Done,
-  Hail,
-  Route,
-  Visibility,
-} from "@mui/icons-material";
-import { useContext, useEffect, useState } from "react";
-import useAxios from "../../api/useAxios";
-import UserContextTypes from "../../types/UserContextTypes";
-import UserDataContext from "../../context/UserDataContext";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import AttendanceTypes from "../../types/attendanceTypes";
-import SnackbarContext from "../../context/SnackbarContext";
-import { SnackBarContextTypes } from "../../types/SnackbarTypes";
-import SelectedEmpsContext from "../../context/SelectedEmpsContext";
-import { io } from "socket.io-client";
-import baseURL from "../../utils/baseURL";
+import { useMutation } from "@tanstack/react-query";
 import { LatLngExpression } from "leaflet";
+import { useContext, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
+import useAxios from "../../api/useAxios";
+import MapComponent from "../../components/Map";
+import SelectedEmpsContext from "../../context/SelectedEmpsContext";
+import SnackbarContext from "../../context/SnackbarContext";
+import UserDataContext from "../../context/UserDataContext";
+import RouteTypes from "../../types/RouteTypes";
+import { SnackBarContextTypes } from "../../types/SnackbarTypes";
+import UserContextTypes from "../../types/UserContextTypes";
+import { UserTypes } from "../../types/UserTypes";
+import AttendanceTypes from "../../types/attendanceTypes";
+import baseURL from "../../utils/baseURL";
+import { ColFlex, RowFlex } from "./../../style_extensions/Flex";
+import ConvertTo12HourFormat from "./../../utils/12HourFormat";
 
 type modalPropTypes = {
   openModal: boolean;
@@ -44,7 +43,7 @@ function StartRoute() {
   const location = useLocation();
   const route: RouteTypes = location.state;
 
-  const { userData, setUserData }: UserContextTypes =
+  const { userData }: UserContextTypes =
     useContext(UserDataContext);
 
   const [myLocation, setMyLocation] = useState<Array<number>>([]);
@@ -94,11 +93,11 @@ function StartRoute() {
   const rangreth = [33.996807, 74.79202];
   const zaira = [34.1639168, 74.8158976];
 
-  const { selectedEmps, setSelectedEmps } = useContext(SelectedEmpsContext);
+  const { setSelectedEmps } = useContext(SelectedEmpsContext);
 
-  const [selectedPassengers, setSelectedPassengers] = useState<
-    Array<UserTypes>
-  >([]);
+  // const [selectedPassengers, setSelectedPassengers] = useState<
+  //   Array<UserTypes>
+  // >([]);
 
   //   console.log(route);
 
@@ -177,7 +176,7 @@ function StartRoute() {
     UpdateRoute();
   }
 
-  const { mutate: markAttendance, status: attendanceStatus } = useMutation({
+  const { mutate: markAttendance } = useMutation({
     mutationFn: markAttendanceMF,
     onSuccess(data) {
       console.log(data.data);

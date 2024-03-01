@@ -1,10 +1,3 @@
-import { Avatar, Box, Button, Typography } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ColFlex, RowFlex } from "../../style_extensions/Flex";
-import RouteTypes from "../../types/RouteTypes";
-import useAxios from "../../api/useAxios";
-import { UserTypes } from "../../types/UserTypes";
-import { useQuery } from "@tanstack/react-query";
 import {
   ArrowBack,
   Close,
@@ -13,6 +6,13 @@ import {
   Route,
   TaskAlt,
 } from "@mui/icons-material";
+import { Avatar, Box, Button, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import { useLocation, useNavigate } from "react-router-dom";
+import useAxios from "../../api/useAxios";
+import { ColFlex, RowFlex } from "../../style_extensions/Flex";
+import RouteTypes from "../../types/RouteTypes";
+import { UserTypes } from "../../types/UserTypes";
 import AttendanceTypes from "../../types/attendanceTypes";
 
 function RouteCompleted() {

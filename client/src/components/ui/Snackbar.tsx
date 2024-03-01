@@ -1,4 +1,4 @@
-import { Snackbar, Alert } from "@mui/material";
+import { Alert, Snackbar } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
 import { SnackbarTypes } from "../../types/SnackbarTypes";
 

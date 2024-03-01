@@ -1,19 +1,19 @@
-import { Box, PaletteMode, ThemeProvider } from "@mui/material";
-import MainRouter from "./router/MainRouter";
-import ProjectTheme from "./style_extensions/ProjectTheme";
-import { useEffect, useState } from "react";
+import { PaletteMode, ThemeProvider } from "@mui/material";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useAxios from "./api/useAxios";
 import GlobalSnackbar from "./components/ui/Snackbar";
-import { SnackbarTypes } from "./types/SnackbarTypes";
+import SelectedEmpsContext from "./context/SelectedEmpsContext";
 import SnackbarContext from "./context/SnackbarContext";
 import UserDataContext from "./context/UserDataContext";
+import MainRouter from "./router/MainRouter";
+import ProjectTheme from "./style_extensions/ProjectTheme";
+import { SnackbarTypes } from "./types/SnackbarTypes";
 import { UserTypes } from "./types/UserTypes";
-import useAxios from "./api/useAxios";
-import { useNavigate } from "react-router-dom";
-import SelectedEmpsContext from "./context/SelectedEmpsContext";
 
 function App() {
-  const [themeMode, setThemeMode] = useState<PaletteMode>("light");
+  const [themeMode] = useState<PaletteMode>("light");
   const [userData, setUserData] = useState<UserTypes>();
   const [selectedEmps, setSelectedEmps] = useState<Array<UserTypes>>([]);
   const navigate = useNavigate();

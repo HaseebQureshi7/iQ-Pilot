@@ -1,3 +1,4 @@
+import "leaflet/dist/leaflet.css";
 import {
   MapContainer,
   Marker,
@@ -5,16 +6,12 @@ import {
   Tooltip,
   useMapEvents,
 } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
 // import "leaflet-routing-machine";
 // import { OpenStreetMapProvider } from "leaflet-geosearch";
-import { useContext, useEffect, useState } from "react";
 import { Icon, LatLngExpression } from "leaflet";
-import UserDataContext from "../context/UserDataContext";
-import useAxios from "../api/useAxios";
-import { useQuery } from "@tanstack/react-query";
-import { UserTypes } from "../types/UserTypes";
+import { useContext } from "react";
 import SelectedEmpsContext from "../context/SelectedEmpsContext";
+import { UserTypes } from "../types/UserTypes";
 import RoutingMachine from "./RoutingMachine";
 
 type MapTypes = {
@@ -39,7 +36,7 @@ const MapComponent = ({
   zoom = 12,
   driverOnFocus
 }: MapTypes) => {
-  const [driversPosition, setDriversPosition] = useState<any>();
+  // const [driversPosition, setDriversPosition] = useState<any>();
 
   const { selectedEmps } = useContext(SelectedEmpsContext);
 
@@ -84,19 +81,6 @@ const MapComponent = ({
     });
     return null;
   }
-
-  // ALL PENDING PASSENGERS
-  // const getAllEmployees = () => {
-  //   return useAxios.get("users/employees");
-  // };
-
-  // const { data: allEmployees, status: allEmployeesStatus } = useQuery({
-  //   queryFn: getAllEmployees,
-  //   queryKey: ["All Employees"],
-  //   select: (data) => {
-  //     return data.data.employees;
-  //   },
-  // });
 
   return (
     <div style={{ position: "relative", height, width, overflow: "hidden" }}>

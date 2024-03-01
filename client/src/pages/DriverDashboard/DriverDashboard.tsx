@@ -1,43 +1,36 @@
 import {
-  Close,
-  Person,
-  Settings,
-  Warning,
-  Logout,
-  ExpandMore,
-  Route,
-  Flag,
   Call,
-  WrongLocation,
+  ExpandMore,
+  Flag,
+  Route,
+  WrongLocation
 } from "@mui/icons-material";
 import {
-  Box,
-  Drawer,
-  Avatar,
-  Typography,
-  Button,
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Divider,
+  Avatar,
+  Box,
+  Button,
   ButtonBase,
+  Divider,
+  Typography
 } from "@mui/material";
-import { PageFlex, ColFlex, RowFlex } from "../../style_extensions/Flex";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useContext, useState } from "react";
-import UserDataContext from "../../context/UserDataContext";
-import UserContextTypes from "../../types/UserContextTypes";
 import { useNavigate } from "react-router-dom";
 import useAxios from "../../api/useAxios";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import RouteTypes from "../../types/RouteTypes";
-import baseURL from "../../utils/baseURL";
-import ConvertTo12HourFormat from "../../utils/12HourFormat";
-import { UserTypes } from "../../types/UserTypes";
 import SnackbarContext from "../../context/SnackbarContext";
+import UserDataContext from "../../context/UserDataContext";
+import { ColFlex, RowFlex } from "../../style_extensions/Flex";
+import RouteTypes from "../../types/RouteTypes";
 import { SnackBarContextTypes } from "../../types/SnackbarTypes";
+import UserContextTypes from "../../types/UserContextTypes";
+import { UserTypes } from "../../types/UserTypes";
+import ConvertTo12HourFormat from "../../utils/12HourFormat";
 
 function DriverDashboard() {
-  const { userData, setUserData }: UserContextTypes =
+  const { userData }: UserContextTypes =
     useContext(UserDataContext);
 
   const navigate = useNavigate();
@@ -49,7 +42,7 @@ function DriverDashboard() {
     return useAxios.get(`route/driverRoute/${userData?._id}`);
   };
 
-  const { data: DriverRoutes, status: allDriverRoutesStatus } = useQuery({
+  const { data: DriverRoutes } = useQuery({
     queryFn: getAllDriverRoutes,
     queryKey: ["All Driver's Routes"],
     select: (data: any) => {
@@ -61,7 +54,7 @@ function DriverDashboard() {
     return useAxios.patch(`route/${route?._id}`, { routeStatus: "inProgress" });
   };
 
-  const { mutate: UpdateRoute, status: UpdateRouteStatus } = useMutation({
+  const { mutate: UpdateRoute } = useMutation({
     mutationFn: updateRouteStatus,
     onSuccess: (data) => {
       // console.log(data.data);

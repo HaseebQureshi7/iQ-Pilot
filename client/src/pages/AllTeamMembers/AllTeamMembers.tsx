@@ -1,11 +1,17 @@
 import {
+  DeleteForever,
+  EditLocation,
+  MoreHoriz,
+  Search,
+  Visibility,
+} from "@mui/icons-material";
+import {
   Avatar,
   Box,
   Divider,
   IconButton,
   Menu,
   MenuItem,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -14,19 +20,12 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import PageContainer from "../../components/ui/PageContainer";
-import { ColFlex, RowFlex } from "./../../style_extensions/Flex";
-import {
-  DeleteForever,
-  EditLocation,
-  MoreHoriz,
-  Search,
-  Visibility,
-} from "@mui/icons-material";
-import useCachedData from "./../../hooks/useCachedData";
-import { UserTypes } from "../../types/UserTypes";
 import { useState } from "react";
+import PageContainer from "../../components/ui/PageContainer";
+import { UserTypes } from "../../types/UserTypes";
 import baseURL from "../../utils/baseURL";
+import useCachedData from "./../../hooks/useCachedData";
+import { ColFlex, RowFlex } from "./../../style_extensions/Flex";
 
 type driverTypes = {
   employees: [UserTypes];
@@ -95,7 +94,10 @@ function AllTeamMembers() {
                           gap: "10px",
                         }}
                       >
-                        <Avatar src={baseURL + employee?.profilePicture} sx={{ width: "30px", height: "30px" }} />
+                        <Avatar
+                          src={baseURL + employee?.profilePicture}
+                          sx={{ width: "30px", height: "30px" }}
+                        />
                         {employee.fName + " " + employee.lName}
                       </Box>
                     </TableCell>

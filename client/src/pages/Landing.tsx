@@ -1,14 +1,14 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { ColFlex, PageFlex } from "./../style_extensions/Flex";
+import { useMutation } from "@tanstack/react-query";
 import { FormEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAxios from "../api/useAxios";
-import { useMutation } from "@tanstack/react-query";
-import SnackbarContext from "../context/SnackbarContext";
-import { SnackBarContextTypes } from "../types/SnackbarTypes";
 import { FadeIn } from "../animations/transitions";
+import useAxios from "../api/useAxios";
+import SnackbarContext from "../context/SnackbarContext";
 import UserDataContext from "../context/UserDataContext";
+import { SnackBarContextTypes } from "../types/SnackbarTypes";
 import { UserTypes } from "../types/UserTypes";
+import { ColFlex, PageFlex } from "./../style_extensions/Flex";
 
 type UserContextTypes = {
   userData?: UserTypes;

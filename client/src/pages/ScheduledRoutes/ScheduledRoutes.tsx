@@ -1,5 +1,11 @@
 import {
-  Avatar,
+  AccessTime,
+  DeleteForever,
+  EditLocation,
+  MoreHoriz,
+  Visibility,
+} from "@mui/icons-material";
+import {
   Box,
   Divider,
   Menu,
@@ -9,21 +15,14 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
+  TableRow
 } from "@mui/material";
+import { useState } from "react";
 import PageContainer from "../../components/ui/PageContainer";
-import { ColFlex, RowFlex } from "./../../style_extensions/Flex";
-import {
-  AccessTime,
-  DeleteForever,
-  EditLocation,
-  MoreHoriz,
-  Visibility,
-} from "@mui/icons-material";
-import useCachedData from "./../../hooks/useCachedData";
 import RouteTypes from "../../types/RouteTypes";
 import ConvertTo12HourFormat from "../../utils/12HourFormat";
-import { useState } from "react";
+import useCachedData from "./../../hooks/useCachedData";
+import { ColFlex, RowFlex } from "./../../style_extensions/Flex";
 
 type routeCacheTypes = {
   nonActiveroutes: [RouteTypes];

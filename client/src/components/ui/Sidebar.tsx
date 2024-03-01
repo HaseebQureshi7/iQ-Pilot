@@ -1,17 +1,17 @@
-import { Dashboard, LocalTaxi, Hail, Route } from "@mui/icons-material";
+import { Dashboard, Hail, LocalTaxi, Route } from "@mui/icons-material";
 import {
+  Avatar,
   Box,
   Button,
-  Divider,
-  Avatar,
-  Typography,
   ButtonProps,
+  Divider,
+  Typography,
 } from "@mui/material";
-import { ColFlex } from "../../style_extensions/Flex";
 import { useContext } from "react";
-import UserDataContext from "../../context/UserDataContext";
-import UserContextTypes from "../../types/UserContextTypes";
 import { useLocation, useNavigate } from "react-router-dom";
+import UserDataContext from "../../context/UserDataContext";
+import { ColFlex } from "../../style_extensions/Flex";
+import UserContextTypes from "../../types/UserContextTypes";
 
 interface SidebarButtonPropTypes extends ButtonProps {
   text: string;
