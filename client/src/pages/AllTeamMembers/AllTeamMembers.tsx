@@ -51,8 +51,9 @@ function AllTeamMembers() {
     <PageContainer
       headerText={`All Team Members (${employees?.length || 0})`}
       subHeadingText="All team members that part of your company."
+      parentStyles={{}}
     >
-      <Box sx={{ ...ColFlex, width: "100%" }}>
+      <Box sx={{ width: "100%", height: "50vh" }}>
         <TableContainer sx={{}}>
           <TextField
             variant="outlined"

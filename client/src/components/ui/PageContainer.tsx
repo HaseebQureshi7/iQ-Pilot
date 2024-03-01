@@ -26,7 +26,7 @@ function PageContainer({
         alignItems: "flex-start",
         backgroundColor: "white",
         borderRadius: "15px",
-        overflowY: "auto",
+        overflowY: "scroll",
         gap: "25px",
         p: "25px",
         ...parentStyles,

@@ -60,11 +60,11 @@ function Signup() {
       // console.log("----------> ",`/${user?.role}`)
       navigate(`/${user?.role}`);
     },
-    onError: (err) => {
+    onError: (err:any) => {
       console.log(err);
       setOpenSnack({
         open: true,
-        message: err.message,
+        message: err?.response?.data?.msg,
         severity: "warning",
       });
     },
