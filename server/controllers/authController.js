@@ -57,7 +57,7 @@ const signUp = catchAsync(async (req, res) => {
   res.cookie("jwt", token, {
     secure: true,
     httpOnly: false,
-    // sameSite: "none",
+    sameSite: "none",
   });
 
   res.status(201).json({
@@ -85,7 +85,7 @@ const login = catchAsync(async (req, res, next) => {
   res.cookie("jwt", token, {
     secure: true,
     httpOnly: false,
-    // sameSite: "none",
+    sameSite: "none",
   });
 
   res.status(200).json({
