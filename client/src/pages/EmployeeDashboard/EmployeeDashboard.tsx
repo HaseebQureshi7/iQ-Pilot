@@ -45,10 +45,18 @@ function EmployeeDashboard() {
 
   const qc = useQueryClient();
 
+  // function Logout() {
+  //   document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  //   setUserData?.(undefined);
+  //   navigate("/");
+  // }
+
   function Logout() {
-    document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    setUserData?.(undefined);
-    navigate("/");
+    // document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    useAxios.post("logout", {}).then(() => {
+      setUserData?.(undefined);
+      navigate("/");
+    });
   }
 
   const SendEmergencyAlert = () => {

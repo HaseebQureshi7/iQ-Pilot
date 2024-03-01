@@ -7,6 +7,7 @@ import UserDataContext from "../context/UserDataContext";
 import { ColFlex, PageFlex, RowFlex } from "../style_extensions/Flex";
 import UserContextTypes from "../types/UserContextTypes";
 import baseURL from "../utils/baseURL";
+import useAxios from "../api/useAxios";
 
 const socket = io(baseURL);
 
@@ -20,10 +21,18 @@ function DriverLayout() {
   const [openModal, setOpenModal] = useState<boolean>(false);
   // const [currPos, setCurrPos] = useState<Array<number>>([]);
 
+  // function Logout() {
+  //   document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  //   setUserData?.(undefined);
+  //   navigate("/");
+  // }
+
   function Logout() {
-    document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    setUserData?.(undefined);
-    navigate("/");
+    // document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    useAxios.post("logout", {}).then(() => {
+      setUserData?.(undefined);
+      navigate("/");
+    });
   }
 
   const SendEmergencyAlert = () => {

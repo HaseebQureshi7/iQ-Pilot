@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import UserDataContext from "../../context/UserDataContext";
 import { ColFlex } from "../../style_extensions/Flex";
 import UserContextTypes from "../../types/UserContextTypes";
+import useAxios from "../../api/useAxios";
 
 interface SidebarButtonPropTypes extends ButtonProps {
   text: string;
@@ -27,9 +28,11 @@ function Sidebar() {
   const location = useLocation();
 
   function Logout() {
-    document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    setUserData?.(undefined);
-    navigate("/");
+    // document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    useAxios.post("logout", {}).then(() => {
+      setUserData?.(undefined);
+      navigate("/");
+    });
   }
 
   const SideBarButton = ({

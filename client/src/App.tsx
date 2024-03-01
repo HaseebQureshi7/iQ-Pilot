@@ -28,24 +28,26 @@ function App() {
     !location.pathname.includes("employee") &&
     !location.pathname.includes("driver");
 
-    useEffect(() => {
-      const autoLogin = async () => {
-        try {
-          if (!userData) {
-            const response = await useAxios.post("/auth/validate-token", {});
-            if (response.status === 200) {
-              setUserData(response.data.user);
-              isBaseRoute && navigate(`/${response.data.currentUser?.role}`)
-            } else {
-              return;
-            }
-          }
-        } catch (error) {
-          console.error("Auto-login failed:", error);
-        }
-      };
-      autoLogin();
-    }, [navigate, setUserData, userData]);
+  useEffect(() => {
+    // if (!userData && document.cookie.startsWith("jwt=")) {
+    useAxios
+      .post("auth/validate-token", {})
+      .then((res) => {
+        let user: UserTypes = res.data.currentUser;
+        setUserData(user);
+        console.log(res.data);
+        // if (!window.location.pathname.includes("dashboard")) {
+        //   navigate(user?.role === "admin" ? "admin" : "dashboard");
+        //   isBaseRoute && navigate(`/${user?.role}`);
+        // }
+        // if (res.data.currentUser?.role) {
+          isBaseRoute && navigate(`/${res.data.currentUser?.role}`);
+        // }
+      })
+      .catch((err) => console.log(err));
+    // }
+
+  }, []);
 
   return (
     <ThemeProvider theme={ProjectTheme(themeMode)}>
