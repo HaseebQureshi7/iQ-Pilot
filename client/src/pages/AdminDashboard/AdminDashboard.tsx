@@ -7,7 +7,7 @@ import useAxios from "../../api/useAxios";
 import MapComponent from "../../components/Map";
 import baseURL from "../../utils/baseURL";
 import { ColFlex, RowFlex } from "./../../style_extensions/Flex";
-import SOSAudio from "../../../public/sounds/emergency.mp3";
+import SOSAudio from "../../assets/sounds/emergency.mp3";
 
 const socket = io(baseURL);
 
@@ -45,10 +45,6 @@ function AdminDashboard() {
       // }
     });
   }, [socket]);
-
-  useEffect(() => {
-    console.log(activeDrivers);
-  }, [activeDrivers]);
 
   useEffect(() => {
     socket.on("live-drivers", (data) => {
@@ -132,7 +128,7 @@ function AdminDashboard() {
         ...ColFlex,
         width: "100%",
         height: "100%",
-        // backgroundColor: "white",
+        // backgroundColor: "black",
         // borderRadius: "10px",
         gap: "15px",
       }}
@@ -366,6 +362,7 @@ function AdminDashboard() {
         }}
       >
         <MapComponent
+          height="100%"
           employees={
             allEmployeesStatus === "success" &&
             allEmployees?.length > 1 &&

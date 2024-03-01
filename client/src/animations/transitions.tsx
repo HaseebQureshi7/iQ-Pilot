@@ -12,10 +12,32 @@ export const FadeIn = ({
 }) => {
   return (
     <motion.div
-      style={{ width: "100%" }}
+      style={{ width: "100%", height:"100%" }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      transition={{ duration, delay }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+export const SlideInOut = ({
+  children,
+  duration = 0.2,
+  delay = 0,
+}: {
+  children: ReactNode;
+  duration?: number;
+  delay?: number;
+}) => {
+  return (
+    <motion.div
+      style={{ width: "100%", height:"100%" }}
+      initial={{ x:10, opacity:0 }}
+      animate={{ x: 0, opacity:1 }}
+      exit={{ x:-10, opacity:0 }}
       transition={{ duration, delay }}
     >
       {children}

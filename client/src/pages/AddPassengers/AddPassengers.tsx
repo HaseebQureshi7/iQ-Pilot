@@ -37,6 +37,7 @@ import { SnackBarContextTypes } from "../../types/SnackbarTypes";
 import { UserTypes } from "../../types/UserTypes";
 import ConvertTo12HourFormat from "../../utils/12HourFormat";
 import { ColFlex, PageFlex, RowFlex } from "./../../style_extensions/Flex";
+import baseURL from "../../utils/baseURL";
 
 // export const GetRMData = (RMData:any) => {
 //   console.log(RMData)
@@ -402,7 +403,7 @@ function AddPassengers() {
                     gap: "10px",
                   }}
                 >
-                  <Avatar sx={{ width: "30px", height: "30px" }} />
+                  <Avatar sx={{ width: "30px", height: "30px" }} src={baseURL + employee?.profilePicture} />
                   <Box>
                     <Typography variant="body1">
                       {employee.fName + " " + employee.lName}
@@ -563,7 +564,7 @@ function AddPassengers() {
                 gap: "10px",
               }}
             >
-              <Avatar sx={{ width: "30px", height: "30px" }} />
+              <Avatar sx={{ width: "30px", height: "30px" }} src={baseURL + routeState?.driver?.profilePicture} />
               <Box>
                 <Typography variant="body1" fontWeight={600}>
                   {"Cab " +
@@ -619,6 +620,7 @@ function AddPassengers() {
                       }}
                     >
                       <Avatar
+                      src={baseURL + employee?.profilePicture}
                         sx={{
                           width: "25px",
                           height: "25px",
@@ -635,7 +637,7 @@ function AddPassengers() {
                       >
                         -{">"}
                       </Typography>
-                      <Avatar sx={{ width: "30px", height: "30px" }} />
+                      <Avatar sx={{ width: "30px", height: "30px" }} src={baseURL + employee?.profilePicture} />
                       <Box>
                         <Typography variant="body1">
                           {employee.fName + " " + employee.lName}

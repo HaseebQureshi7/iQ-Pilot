@@ -172,7 +172,7 @@ function EmployeeDashboard() {
               p: "5px",
             }}
           >
-            <Avatar />
+            <Avatar src={baseURL + userData?.profilePicture} />
             <Box sx={{ ...ColFlex, width: "70%", alignItems: "flex-start" }}>
               <Typography variant="h6">
                 {userData?.fName + " " + userData?.lName}
@@ -311,6 +311,7 @@ function EmployeeDashboard() {
 
       {/* Profile Picture */}
       <Avatar
+      src={baseURL + userData?.profilePicture}
         onClick={() => setOpenDrawer(!openDrawer)}
         sx={{ position: "absolute", top: 15, left: 15, zIndex: 999 }}
       />
@@ -380,7 +381,7 @@ function EmployeeDashboard() {
                 </span>
               </Typography>
             </Box>
-            <Avatar />
+            <Avatar src={baseURL + userData?.profilePicture} />
           </Box>
         )}
         <Divider sx={{ width: "75%" }} />

@@ -14,10 +14,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import {
-  DateCalendar,
-  MobileTimePicker
-} from "@mui/x-date-pickers";
+import { DateCalendar, MobileTimePicker } from "@mui/x-date-pickers";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useContext, useState } from "react";
@@ -49,7 +46,7 @@ function Appbar() {
     if (newTime) {
       const newDate = newTime;
       setSelectedTime(String(newDate?.$H) + ":" + String(newDate?.$m));
-      console.log(String(newDate?.$H) + ":" + String(newDate?.$m)) 
+      console.log(String(newDate?.$H) + ":" + String(newDate?.$m));
     }
   };
 
@@ -76,13 +73,12 @@ function Appbar() {
       };
       // console.log(routeStateData);
       navigate("/admin/addPassengers", { state: routeStateData });
-    }
-    else {
+    } else {
       setOpenSnack({
         open: true,
-        message:"Fields missing! Please add all the details to proceed!",
-        severity:"warning"
-      })
+        message: "Fields missing! Please add all the details to proceed!",
+        severity: "warning",
+      });
     }
   }
 
@@ -93,8 +89,9 @@ function Appbar() {
         justifyContent: "flex-end",
         backgroundColor: "white",
         width: "100%",
-        border: "",
-        height: "10%",
+        // border: "",
+        // height: "10vh",
+        padding: "10px",
         borderRadius: "150px",
         gap: "30px",
         pr: "15px",
@@ -207,14 +204,17 @@ function Appbar() {
                   label="Pickup or Drop"
                   onChange={handleSelectDriver}
                 >
-                  {drivers?.length &&
+                  {drivers?.length ? (
                     drivers.map((driver: UserTypes) => {
                       return (
                         <MenuItem key={driver?._id} value={driver as any}>
                           {driver.fName + " " + driver.lName}
                         </MenuItem>
                       );
-                    })}
+                    })
+                  ) : (
+                    <MenuItem value={"No Driver"}>No Driver</MenuItem>
+                  )}
                 </Select>
               </FormControl>
             </Box>

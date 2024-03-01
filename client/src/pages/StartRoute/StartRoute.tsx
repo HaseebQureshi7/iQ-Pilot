@@ -446,7 +446,7 @@ function StartRoute() {
                       gap: "10px",
                     }}
                   >
-                    <Avatar sx={{ width: "30px", height: "30px" }} />
+                    <Avatar src={baseURL + userData?.profilePicture} sx={{ width: "30px", height: "30px" }} />
                     <Box>
                       <Typography variant="body1">
                         {passenger.fName + " " + passenger.lName}

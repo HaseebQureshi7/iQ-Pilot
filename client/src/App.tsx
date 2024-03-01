@@ -29,24 +29,18 @@ function App() {
     !location.pathname.includes("driver");
 
   useEffect(() => {
-    // if (!userData && document.cookie.startsWith("jwt=")) {
-    useAxios
-      .post("auth/validate-token", {})
-      .then((res) => {
-        let user: UserTypes = res.data.currentUser;
-        setUserData(user);
-        console.log(res.data);
-        // if (!window.location.pathname.includes("dashboard")) {
-        //   navigate(user?.role === "admin" ? "admin" : "dashboard");
-        //   isBaseRoute && navigate(`/${user?.role}`);
-        // }
-        // if (res.data.currentUser?.role) {
-          isBaseRoute && navigate(`/${res.data.currentUser?.role}`);
-        // }
-      })
-      .catch((err) => console.log(err));
-    // }
-
+    if (!userData) {
+      useAxios
+        .post("auth/validate-token", {})
+        .then((res) => {
+          let user: UserTypes = res.data.currentUser;
+          setUserData(user);
+          // if (res.data.currentUser?.role) {
+            isBaseRoute && navigate(`/${res.data.currentUser?.role}`);
+          // }
+        })
+        .catch((err) => console.log(err));
+    }
   }, []);
 
   return (
@@ -55,18 +49,8 @@ function App() {
         <SelectedEmpsContext.Provider value={{ selectedEmps, setSelectedEmps }}>
           <GlobalSnackbar value={{ openSnack, setOpenSnack }} />
           <SnackbarContext.Provider value={{ openSnack, setOpenSnack }}>
-            {/* <Box
-        sx={{
-          maxWidth: "100vw",
-          minHeight: "100vh",
-          color: "text.primary",
-          background: "background.default",
-          overflowX:"hidden"
-        }}
-      > */}
             <MainRouter />
             <ReactQueryDevtools />
-            {/* </Box> */}
           </SnackbarContext.Provider>
         </SelectedEmpsContext.Provider>
       </UserDataContext.Provider>

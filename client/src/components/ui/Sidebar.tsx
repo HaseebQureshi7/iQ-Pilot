@@ -13,6 +13,7 @@ import UserDataContext from "../../context/UserDataContext";
 import { ColFlex } from "../../style_extensions/Flex";
 import UserContextTypes from "../../types/UserContextTypes";
 import useAxios from "../../api/useAxios";
+import baseURL from "../../utils/baseURL";
 
 interface SidebarButtonPropTypes extends ButtonProps {
   text: string;
@@ -140,7 +141,10 @@ function Sidebar() {
           justifyContent: "flex-start",
         }}
       >
-        <Avatar sx={{ width: "60px", height: "60px", mb: "10px" }} />
+        <Avatar
+          sx={{ width: "60px", height: "60px", mb: "10px" }}
+          src={baseURL + userData?.profilePicture}
+        />
         <Typography variant="body1" fontWeight={600}>
           {userData?.fName[0] + "." + " " + userData?.lName}
         </Typography>

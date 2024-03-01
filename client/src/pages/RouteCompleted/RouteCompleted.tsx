@@ -14,6 +14,7 @@ import { ColFlex, RowFlex } from "../../style_extensions/Flex";
 import RouteTypes from "../../types/RouteTypes";
 import { UserTypes } from "../../types/UserTypes";
 import AttendanceTypes from "../../types/attendanceTypes";
+import baseURL from "../../utils/baseURL";
 
 function RouteCompleted() {
   const location = useLocation();
@@ -151,7 +152,7 @@ function RouteCompleted() {
                       gap: "10px",
                     }}
                   >
-                    <Avatar sx={{ width: "30px", height: "30px" }} />
+                    <Avatar sx={{ width: "30px", height: "30px" }} src={baseURL + attendance?.ofEmployee?.profilePicture} />
                     <Box>
                       <Typography variant="body1">
                         {attendance?.ofEmployee?.fName +

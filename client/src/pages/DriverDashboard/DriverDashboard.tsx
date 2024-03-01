@@ -28,6 +28,7 @@ import { SnackBarContextTypes } from "../../types/SnackbarTypes";
 import UserContextTypes from "../../types/UserContextTypes";
 import { UserTypes } from "../../types/UserTypes";
 import ConvertTo12HourFormat from "../../utils/12HourFormat";
+import baseURL from "../../utils/baseURL";
 
 function DriverDashboard() {
   const { userData }: UserContextTypes =
@@ -196,6 +197,7 @@ function DriverDashboard() {
                                 }}
                               >
                                 <Avatar
+                                src={baseURL + passenger?.profilePicture}
                                   sx={{ width: "30px", height: "30px" }}
                                 />
                                 <Box>
