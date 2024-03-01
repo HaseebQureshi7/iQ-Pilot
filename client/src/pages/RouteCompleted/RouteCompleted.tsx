@@ -24,7 +24,7 @@ function RouteCompleted() {
     return useAxios.get(`attendance/route-attendance/${route?._id}`);
   };
 
-  const { data: attendanceData, status: attendanceDataStatus } = useQuery({
+  const { data: attendanceData } = useQuery({
     queryFn: getAllDriverRoutes,
     queryKey: ["Route Attendance"],
     select: (data: any) => {

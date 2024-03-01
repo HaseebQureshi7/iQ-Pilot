@@ -31,7 +31,7 @@ const socket = io(baseURL);
 function EmployeeDashboard() {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [passengerPickupNumber, setPassengerPickupNumber] = useState<number>();
+  const [passengerPickupNumber] = useState<number>();
 
   const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
 
@@ -39,7 +39,7 @@ function EmployeeDashboard() {
   const { userData, setUserData }: UserContextTypes =
     useContext(UserDataContext);
 
-  const { selectedEmps, setSelectedEmps } = useContext(SelectedEmpsContext);
+  const { setSelectedEmps } = useContext(SelectedEmpsContext);
 
   const navigate = useNavigate();
 
@@ -109,9 +109,9 @@ function EmployeeDashboard() {
       console.log(passengersLatLons);
       setSelectedEmps(passengersLatLons);
 
-      const numberInList = passengers?.filter((passenger, index) => {
-        passenger?._id === userData?._id && setPassengerPickupNumber(index + 1);
-      });
+      // const numberInList = passengers?.filter((passenger, index) => {
+      //   passenger?._id === userData?._id && setPassengerPickupNumber(index + 1);
+      // });
       // console.log(numberInList);
     }
   }, [routeData]);
