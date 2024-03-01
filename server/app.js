@@ -19,7 +19,7 @@ app.use(express.static(path.resolve(__dirname, "static/profilePictures")));
 app.use(express.json({ limit: "10mb" }));
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://ipilot.vercel.app/"],
+    origin: ["http://localhost:5173", "https://ipilot.vercel.app"],
     credentials: true,
   })
 );
