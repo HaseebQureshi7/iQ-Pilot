@@ -1,18 +1,20 @@
 import { Call, Close, Warning } from "@mui/icons-material";
 import { Box, Button, Modal, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import useAxios from "../../api/useAxios";
 import MapComponent from "../../components/Map";
 import baseURL from "../../utils/baseURL";
 import { ColFlex, RowFlex } from "./../../style_extensions/Flex";
+import SOSAudio from "../../../public/sounds/emergency.mp3";
 
 const socket = io(baseURL);
 
 function AdminDashboard() {
   const [activeDrivers, setActiveDrivers] = useState<any>([]);
   const [SOSEmergency, setSOSEmergency] = useState<any>(null);
+  const audioRef = useRef<any>();
 
   // function extractLocations(input: any) {
   //   input.map((item: any) => {
@@ -38,6 +40,9 @@ function AdminDashboard() {
     socket.on("SOS", (data) => {
       console.log("SOS ------->  ", data);
       setSOSEmergency(data);
+      // if (audioRef.current) {
+      audioRef.current.play();
+      // }
     });
   }, [socket]);
 
@@ -162,6 +167,7 @@ function AdminDashboard() {
               marginTop: "15px",
             }}
           >
+            <audio id="myAudio" ref={audioRef} src={SOSAudio}></audio>
             <Box
               sx={{
                 ...RowFlex,
