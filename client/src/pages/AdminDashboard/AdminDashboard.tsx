@@ -15,6 +15,7 @@ function AdminDashboard() {
   const [activeDrivers, setActiveDrivers] = useState<any>([]);
   const [SOSEmergency, setSOSEmergency] = useState<any>(null);
   const audioRef = useRef<any>();
+  // const emergencyAudio = new Audio(SOSAudio);
 
   // function extractLocations(input: any) {
   //   input.map((item: any) => {
@@ -41,7 +42,8 @@ function AdminDashboard() {
       console.log("SOS ------->  ", data);
       setSOSEmergency(data);
       // if (audioRef.current) {
-      audioRef.current.play();
+      // audioRef.current?.play();
+      // emergencyAudio?.play();
       // }
     });
   }, [socket]);
@@ -163,7 +165,6 @@ function AdminDashboard() {
               marginTop: "15px",
             }}
           >
-            <audio id="myAudio" ref={audioRef} src={SOSAudio}></audio>
             <Box
               sx={{
                 ...RowFlex,
@@ -182,9 +183,18 @@ function AdminDashboard() {
                   width: "100px",
                   height: "50px",
                 }}
-                onClick={() => setSOSEmergency(undefined)}
+                onClick={() => {
+                  setSOSEmergency(undefined);
+                }}
               />
             </Box>
+            <audio
+              id="myAudio"
+              ref={audioRef}
+              src={SOSAudio}
+              autoPlay
+              loop
+            ></audio>
             <Typography variant="h5" fontWeight={600} sx={{ mb: "10px" }}>
               {SOSEmergency?.sosFrom} is in Danger !
             </Typography>
@@ -219,7 +229,7 @@ function AdminDashboard() {
               size="large"
               startIcon={<Call />}
             >
-              Call Driver
+              Call : {SOSEmergency?.phone}
             </Button>
           </Box>
         </Box>

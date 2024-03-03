@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import Landing from "../pages/Landing";
 import Signup from "../pages/Signup/Signup";
-import { FadeIn, SlideInOut } from "../animations/transitions";
+import { IOSExpand, FadeIn, SlideInOut } from "../animations/transitions";
 import AdminDashboard from "../pages/AdminDashboard/AdminDashboard";
 import DriverDashboard from "../pages/DriverDashboard/DriverDashboard";
 import EmployeeDashboard from "../pages/EmployeeDashboard/EmployeeDashboard";
@@ -17,22 +17,31 @@ import StartRoute from "../pages/StartRoute/StartRoute";
 import DriverLayout from "./../layouts/DriverLayout";
 import RouteCompleted from "../pages/RouteCompleted/RouteCompleted";
 import { AnimatePresence } from "framer-motion";
+import PageNotFound from "../pages/PageNotFound/PageNotFound";
 
 function MainRouter() {
   const { userData }: UserContextTypes = useContext(UserDataContext);
   const location = useLocation();
 
+  const isBaseRoute: boolean =
+  !location.pathname.includes("admin") &&
+  !location.pathname.includes("employee") &&
+  !location.pathname.includes("driver");
+
   return (
     <AnimatePresence mode="wait">
       <Routes key={location.pathname} location={location.pathname}>
         {/* <Route path="*" element={<Navigate to={"/"} />} /> */}
-        <Route path="*" element={<h1>Page Not Found!</h1>} />
+        {userData !== undefined && (
+          <Route path="*" element={<PageNotFound />} />
+        )}
+        {isBaseRoute && <Route path="*" element={<PageNotFound />} />}
         <Route
           index
           element={
-            <FadeIn>
+            <IOSExpand>
               <Landing /> {/* This is also a Login */}
-            </FadeIn>
+            </IOSExpand>
           }
         />
 
@@ -87,7 +96,7 @@ function MainRouter() {
         {/* DRIVER ROUTER */}
         {userData?.role === "driver" && (
           <>
-            <Route path="/driver" element={<DriverLayout />}>
+            <Route path="/driver" element={<IOSExpand><DriverLayout /></IOSExpand>}>
               <Route index element={<DriverDashboard />} />
               <Route path="startRoute" element={<StartRoute />} />
               <Route path="routeCompleted" element={<RouteCompleted />} />
@@ -96,7 +105,7 @@ function MainRouter() {
         )}
         {/* EMPLOYEE ROUTER */}
         {userData?.role === "employee" && (
-          <Route path="/employee" element={<EmployeeDashboard />} />
+          <Route path="/employee" element={<IOSExpand><EmployeeDashboard /></IOSExpand>} />
         )}
       </Routes>
     </AnimatePresence>

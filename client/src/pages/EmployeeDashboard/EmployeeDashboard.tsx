@@ -35,7 +35,6 @@ function EmployeeDashboard() {
 
   const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
 
-
   const { userData, setUserData }: UserContextTypes =
     useContext(UserDataContext);
 
@@ -72,6 +71,13 @@ function EmployeeDashboard() {
         location: [pos.coords.latitude, pos.coords.longitude],
       };
       socket.emit("SOS", sosData);
+      setOpenModal(!openModal);
+      setOpenSnack({
+        open: true,
+        message:
+          "Emergency SOS was sent. Admin will get in touch with you shortly.",
+        severity: "info",
+      });
       // console.log(sosData);
     });
   };
@@ -100,9 +106,11 @@ function EmployeeDashboard() {
       setUserData?.(data.data.newUser as UserTypes);
       setOpenSnack({
         open: true,
-        message: data.data.newUser.cancelCab ? "Cab service cancelled!" : "Cab service resumed",
-        severity: data.data.newUser.cancelCab ? "warning" : 'success'
-      })
+        message: data.data.newUser.cancelCab
+          ? "Cab service cancelled!"
+          : "Cab service resumed",
+        severity: data.data.newUser.cancelCab ? "warning" : "success",
+      });
     },
   });
 
@@ -311,7 +319,7 @@ function EmployeeDashboard() {
 
       {/* Profile Picture */}
       <Avatar
-      src={baseURL + userData?.profilePicture}
+        src={baseURL + userData?.profilePicture}
         onClick={() => setOpenDrawer(!openDrawer)}
         sx={{ position: "absolute", top: 15, left: 15, zIndex: 999 }}
       />
@@ -426,12 +434,14 @@ function EmployeeDashboard() {
           </Box>
         )}
         {/* EMP Actions */}
-        {routeData && (
+        {routeData ? (
           <Box sx={{ ...RowFlex, width: "100%", gap: "10px", px: "15px" }}>
             <Button
               onClick={HandleCancelCab}
               sx={{
-                backgroundColor: userData?.cancelCab ? "info.main" : "error.main",
+                backgroundColor: userData?.cancelCab
+                  ? "info.main"
+                  : "error.main",
                 borderRadius: "10px",
                 color: "white",
                 padding: "15px",
@@ -455,6 +465,20 @@ function EmployeeDashboard() {
               CALL
             </Button>
           </Box>
+        ) : (
+          <Button
+            onClick={HandleCancelCab}
+            sx={{
+              backgroundColor: userData?.cancelCab ? "info.main" : "error.main",
+              borderRadius: "10px",
+              color: "white",
+              padding: "15px",
+              width: "60%",
+            }}
+            startIcon={<Close />}
+          >
+            {userData?.cancelCab ? "RESUME CAB SERVICE" : "CANCEL CAB SERVICE"}
+          </Button>
         )}
       </Box>
       <MapComponent

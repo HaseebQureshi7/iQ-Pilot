@@ -36,7 +36,7 @@ function App() {
           let user: UserTypes = res.data.currentUser;
           setUserData(user);
           // if (res.data.currentUser?.role) {
-            isBaseRoute && navigate(`/${res.data.currentUser?.role}`);
+          isBaseRoute && navigate(`/${res.data.currentUser?.role}`);
           // }
         })
         .catch((err) => console.log(err));
