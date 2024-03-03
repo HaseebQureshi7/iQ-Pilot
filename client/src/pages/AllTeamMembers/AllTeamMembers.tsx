@@ -25,7 +25,7 @@ import PageContainer from "../../components/ui/PageContainer";
 import { UserTypes } from "../../types/UserTypes";
 import baseURL from "../../utils/baseURL";
 import useCachedData from "./../../hooks/useCachedData";
-import { ColFlex, RowFlex } from "./../../style_extensions/Flex";
+import { RowFlex } from "./../../style_extensions/Flex";
 
 type driverTypes = {
   employees: [UserTypes];
