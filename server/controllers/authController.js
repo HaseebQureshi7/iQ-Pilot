@@ -83,6 +83,7 @@ const login = catchAsync(async (req, res, next) => {
   const token = signingFunc(user._id);
 
   res.cookie("jwt", token, {
+    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
     secure: true,
     httpOnly: false,
     sameSite: "none",

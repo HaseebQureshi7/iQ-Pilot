@@ -30,7 +30,7 @@ function MainRouter() {
 
   return (
     <AnimatePresence mode="wait">
-      <Routes key={location.pathname} location={location.pathname}>
+      <Routes key={location.pathname} location={location}>
         {/* <Route path="*" element={<Navigate to={"/"} />} /> */}
         {userData !== undefined && (
           <Route path="*" element={<PageNotFound />} />
