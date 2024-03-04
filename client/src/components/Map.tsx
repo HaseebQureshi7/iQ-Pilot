@@ -33,7 +33,7 @@ const MapComponent = ({
   activeDrivers,
   SOS,
   center = [34.0836, 74.7973],
-  zoom = 12,
+  zoom = 11,
   driverOnFocus
 }: MapTypes) => {
   // const [driversPosition, setDriversPosition] = useState<any>();
@@ -41,7 +41,7 @@ const MapComponent = ({
   const { selectedEmps } = useContext(SelectedEmpsContext);
 
   const rangreth = [33.996807, 74.79202];
-  const zaira = [34.1639168, 74.8158976];
+  const zaira = [34.173415, 74.808653];
 
   const cabIcon = new Icon({
     iconUrl: "/images/cab-icon.png",

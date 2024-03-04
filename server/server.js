@@ -22,8 +22,12 @@ const liveDrivers = new Map();
 const io = new Server(server, {
   cors: {
     origin: ["http://localhost:5173", "https://ipilot.vercel.app"],
-  }
-})
+  },
+  maxHttpBufferSize: 1e7, // Set maximum HTTP buffer size (10 MB in this example)
+  pingInterval: 10000, // Set ping interval to 10 seconds
+  pingTimeout: 5000, // Set ping timeout to 5 seconds
+  // transports: ["websocket"], // Use WebSocket transport only
+});
 
 io.on("connection", (socket) => {
   console.log(socket.id + " joined")

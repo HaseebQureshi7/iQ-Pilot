@@ -94,21 +94,23 @@ function EmployeeDashboard() {
     // console.log(mapTest)
 
     const mapValues = Array.from(mapTest.values());
+    setDriversLocation(mapValues);
 
-    console.log(mapValues);
-    const dName = routeData?.driver?.fName[0] + ". " + routeData?.driver?.lName;
-    const myDriver = mapValues.find((driver: any) => driver.name == dName);
-    if (myDriver) {
-      setDriversLocation([myDriver]);
-    }
-    console.log('myDriver -> ', myDriver)
+    // console.log(mapValues);
+    // const dName = routeData?.driver?.fName[0] + ". " + routeData?.driver?.lName;
+    // const myDriver = mapValues.find((driver: any) => { console.log(driver.name === dName); driver.name == dName});
+    // if (myDriver) {
+    // setDriversLocation([myDriver]);
+    // console.log('myDriver -> ', myDriver)
+    // console.log('allDrivers --> ', mapValues)
+    // }
   };
 
   useEffect(() => {
     socket.on("live-drivers", (data) => {
       // console.log("Live Drivers ------->  ", data);
-      const locations = data;
-      extractDriverData(locations);
+      // const locations = data;
+      extractDriverData(data);
     });
   }, [socket]);
 
@@ -148,7 +150,7 @@ function EmployeeDashboard() {
     cancelCab();
   }
 
-  console.log(routeData);
+  // console.log(routeData);
   useEffect(() => {
     const passengers = routeData?.passengers;
 
@@ -379,19 +381,28 @@ function EmployeeDashboard() {
           }}
         >
           {routeData ? (
-            <Typography sx={{ color: "white", fontWeight: 500 }} variant="h4">
-              Arrival -{" "}
-              <span style={{ fontWeight: 600 }}>
-                {ConvertTo12HourFormat(
-                  CalculateArrivalTimes(
-                    routeData?.shiftTime as string,
-                    routeData?.estimatedTime as number,
-                    routeData?.passengers?.length as number,
-                    passengerPickupNumber ? passengerPickupNumber : 1
-                  )
-                )}
-              </span>
-            </Typography>
+            routeData?.typeOfRoute == "pickup" ? (
+              <Typography sx={{ color: "white", fontWeight: 500 }} variant="h4">
+                Arrival -{" "}
+                <span style={{ fontWeight: 600 }}>
+                  {ConvertTo12HourFormat(
+                    CalculateArrivalTimes(
+                      routeData?.shiftTime as string,
+                      routeData?.estimatedTime as number,
+                      routeData?.passengers?.length as number,
+                      passengerPickupNumber ? passengerPickupNumber : 1
+                    )
+                  )}
+                </span>
+              </Typography>
+            ) : (
+              <Typography sx={{ color: "white", fontWeight: 500 }} variant="h5">
+                Onboarding at - {"  "}
+                <span style={{ fontWeight: 600 }}>
+                  {ConvertTo12HourFormat(routeData?.shiftTime as string)}
+                </span>
+              </Typography>
+            )
           ) : (
             <Typography sx={{ color: "white", fontWeight: 500 }} variant="h5">
               No Cab Assigned ; {"("}
@@ -477,6 +488,7 @@ function EmployeeDashboard() {
                 padding: "15px",
                 width: "60%",
               }}
+              variant="contained"
               startIcon={<Close />}
             >
               {userData?.cancelCab ? "RESUME CAB" : "CANCEL CAB"}
@@ -490,6 +502,7 @@ function EmployeeDashboard() {
                 padding: "15px",
                 width: "40%",
               }}
+              variant="contained"
               startIcon={<Call />}
             >
               CALL

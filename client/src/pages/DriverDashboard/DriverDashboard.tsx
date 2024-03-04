@@ -3,7 +3,7 @@ import {
   ExpandMore,
   Flag,
   Route,
-  WrongLocation
+  WrongLocation,
 } from "@mui/icons-material";
 import {
   Accordion,
@@ -14,7 +14,7 @@ import {
   Button,
   ButtonBase,
   Divider,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useContext, useState } from "react";
@@ -31,8 +31,7 @@ import ConvertTo12HourFormat from "../../utils/12HourFormat";
 import baseURL from "../../utils/baseURL";
 
 function DriverDashboard() {
-  const { userData }: UserContextTypes =
-    useContext(UserDataContext);
+  const { userData }: UserContextTypes = useContext(UserDataContext);
 
   const navigate = useNavigate();
   const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
@@ -97,8 +96,27 @@ function DriverDashboard() {
           p: "15px",
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          Assigned Routes ({DriverRoutes?.length})
+        <Typography
+          variant="h5"
+          sx={{ fontWeight: 500, ...RowFlex, gap: "10px" }}
+        >
+          You have
+          <Typography
+            sx={{
+              backgroundColor: "primary.main",
+              color: "white",
+              borderRadius: "5px",
+              px: "10px",
+            }}
+            variant="h5"
+            fontWeight={600}
+          >
+            {/* <Route/> */}
+            {DriverRoutes?.length ? DriverRoutes?.length : 0}{" "}
+            {((DriverRoutes?.length ? DriverRoutes?.length : 0) as number) > 1
+              ? "Routes"
+              : "Route"}
+          </Typography>{" "}
         </Typography>
       </Box>
       <Box sx={{ ...ColFlex, width: "100%", gap: "20px", px: "10px" }}>
@@ -197,7 +215,7 @@ function DriverDashboard() {
                                 }}
                               >
                                 <Avatar
-                                src={baseURL + passenger?.profilePicture}
+                                  src={baseURL + passenger?.profilePicture}
                                   sx={{ width: "30px", height: "30px" }}
                                 />
                                 <Box>
