@@ -19,9 +19,17 @@ app.use(express.static(path.resolve(__dirname, "static/profilePictures")));
 app.use(express.json({ limit: "10mb" }));
 app.use(
   cors({
-    exposedHeaders: 'Set-Cookie',
-    origin: ["http://localhost:5173", "https://ipilot.vercel.app"],
     credentials: true,
+    optionSuccessStatus: 200,
+    Headers: true,
+    exposedHeaders: 'Set-Cookie',
+    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Access-Control-Allow-Origin',
+      'Content-Type',
+      'Authorization'
+    ],
+    origin: ["http://localhost:5173", "https://ipilot.vercel.app"],
   })
 );
 app.use(cookieParser());
