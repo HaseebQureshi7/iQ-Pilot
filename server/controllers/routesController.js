@@ -162,7 +162,7 @@ exports.getEmployeeRoute = catchAsync(async function (req, res, next) {
   const formattedTime = timeFormatter(new Date());
 
   const routes = await Route.find({
-    routeStatus: "notStarted",
+    routeStatus: {$ne : "completed"},
     passengers: { $in: eid },
     shiftTime: { $gt: formattedTime },
   })
