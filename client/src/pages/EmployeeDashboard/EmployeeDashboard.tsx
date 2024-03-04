@@ -1,4 +1,11 @@
-import { Call, Close, Person, Settings, Warning } from "@mui/icons-material";
+import {
+  ArrowRight,
+  Call,
+  Close,
+  Person,
+  Settings,
+  Warning,
+} from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -468,13 +475,15 @@ function EmployeeDashboard() {
           <Button
             onClick={HandleCancelCab}
             sx={{
-              backgroundColor: userData?.cancelCab ? "info.main" : "error.main",
+              // backgroundColor: userData?.cancelCab ? "info.main" : "error.main",
               borderRadius: "10px",
-              color: "white",
+              // color: "white",
               padding: "15px",
               width: "60%",
             }}
-            startIcon={<Close />}
+            color={!userData?.cancelCab ? "error" : "info"}
+            variant="contained"
+            startIcon={!userData?.cancelCab ? <Close /> : <ArrowRight />}
           >
             {userData?.cancelCab ? "RESUME CAB SERVICE" : "CANCEL CAB SERVICE"}
           </Button>
