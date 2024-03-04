@@ -48,8 +48,9 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     liveDrivers.delete(socket.id)
-    console.log(socket.id, "A user disconnected");
-    console.log(liveDrivers, "New Map");
+    // console.log(socket.id, "A user disconnected");
+    // console.log(liveDrivers, "New Map");
+    io.emit("live-drivers", Array.from(liveDrivers))
   });
 }
 )
