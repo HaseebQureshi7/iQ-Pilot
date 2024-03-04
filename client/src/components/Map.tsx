@@ -82,6 +82,7 @@ const MapComponent = ({
     return null;
   }
 
+
   return (
     <div style={{ position: "relative", height, width, overflow: "hidden" }}>
       {/* <button onClick={() => setPosition([34.0836, 74.7973])}>
@@ -121,7 +122,7 @@ const MapComponent = ({
               </Marker>
               }
 
-        {activeDrivers?.length &&
+        {activeDrivers && activeDrivers?.length &&
           activeDrivers?.map((drivers) => {
             return (
               <Marker

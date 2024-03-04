@@ -38,6 +38,7 @@ const socket = io(baseURL);
 function EmployeeDashboard() {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [driversLocation, setDriversLocation] = useState<any>();
   const [passengerPickupNumber] = useState<number>();
 
   const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
@@ -88,6 +89,29 @@ function EmployeeDashboard() {
     });
   };
 
+  const extractDriverData = (rawData: any) => {
+    const mapTest = new Map(rawData);
+    // console.log(mapTest)
+
+    const mapValues = Array.from(mapTest.values());
+
+    console.log(mapValues);
+    const dName = routeData?.driver?.fName[0] + ". " + routeData?.driver?.lName;
+    const myDriver = mapValues.find((driver: any) => driver.name == dName);
+    if (myDriver) {
+      setDriversLocation([myDriver]);
+    }
+    console.log('myDriver -> ', myDriver)
+  };
+
+  useEffect(() => {
+    socket.on("live-drivers", (data) => {
+      // console.log("Live Drivers ------->  ", data);
+      const locations = data;
+      extractDriverData(locations);
+    });
+  }, [socket]);
+
   const getEmployeeRoute = () => {
     return useAxios.get(`route/employeeRoute/${userData?._id}`);
   };
@@ -132,7 +156,7 @@ function EmployeeDashboard() {
       const passengersLatLons: string[] = passengers.map(
         (passenger: any) => passenger.pickup
       );
-      console.log(passengersLatLons);
+      // console.log(passengersLatLons);
       setSelectedEmps(passengersLatLons);
 
       // const numberInList = passengers?.filter((passenger, index) => {
@@ -492,6 +516,8 @@ function EmployeeDashboard() {
       <MapComponent
         height="100%"
         employees={routeData?.passengers as [UserTypes]}
+        // {...(driversLocation !== undefined && { activeDrivers: [driversLocation] })}
+        activeDrivers={driversLocation}
       />
     </Box>
   );
