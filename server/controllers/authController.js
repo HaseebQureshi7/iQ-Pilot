@@ -115,14 +115,7 @@ const validateToken = catchAsync(async (req, res, next) => {
   if (!currentUser) {
     return next(new AppError(`Invalid Token.`, 401));
   }
-
-  res.cookie("jwt", token, {
-    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-    secure: true,
-    httpOnly: true,
-    sameSite: "none",
-  });
-
+  
   res.status(200).json({ message: "User already logged in", currentUser });
 });
 

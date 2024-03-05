@@ -29,6 +29,7 @@ function App() {
     !location.pathname.includes("driver");
 
   useEffect(() => {
+    console.log(document.cookie)
     if (!userData && document.cookie.includes("jwt")) {
       useAxios
         .post("auth/validate-token", {})
