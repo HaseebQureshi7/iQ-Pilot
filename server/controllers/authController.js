@@ -123,7 +123,7 @@ const logout = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
   if (token) {
     res.cookie("jwt", "", {
-      expires: new Date(0),
+      expires: new Date(10),
       httpOnly: true,
       sameSite: "none",
     });
