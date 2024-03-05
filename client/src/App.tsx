@@ -11,10 +11,10 @@ import MainRouter from "./router/MainRouter";
 import ProjectTheme from "./style_extensions/ProjectTheme";
 import { SnackbarTypes } from "./types/SnackbarTypes";
 import { UserTypes } from "./types/UserTypes";
-import { registerServiceWorker } from "./serviceWorkerRegistration";
+// import { registerServiceWorker } from "./serviceWorkerRegistration";
 
 function App() {
-  registerServiceWorker();
+  // registerServiceWorker();
 
   const [themeMode] = useState<PaletteMode>("light");
   const [userData, setUserData] = useState<UserTypes>();
