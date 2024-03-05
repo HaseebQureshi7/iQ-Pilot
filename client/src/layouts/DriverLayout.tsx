@@ -8,12 +8,16 @@ import { ColFlex, PageFlex, RowFlex } from "../style_extensions/Flex";
 import UserContextTypes from "../types/UserContextTypes";
 import baseURL from "../utils/baseURL";
 import useAxios from "../api/useAxios";
+import SnackbarContext from "../context/SnackbarContext";
+import { SnackBarContextTypes } from "../types/SnackbarTypes";
 
 const socket = io(baseURL);
 
 function DriverLayout() {
   const { userData, setUserData }: UserContextTypes =
     useContext(UserDataContext);
+
+  const { setOpenSnack }: SnackBarContextTypes = useContext(SnackbarContext);
 
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -48,6 +52,13 @@ function DriverLayout() {
         location: [pos.coords.latitude, pos.coords.longitude],
       };
       socket.emit("SOS", sosData);
+      setOpenDrawer(!openDrawer);
+      setOpenSnack({
+        open: true,
+        message:
+          "Emergency SOS was sent. Admin will get in touch with you shortly.",
+        severity: "info",
+      });
       // console.log(sosData);
     });
   };
