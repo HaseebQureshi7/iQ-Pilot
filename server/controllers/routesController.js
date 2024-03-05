@@ -90,7 +90,7 @@ exports.getAllRoutes = catchAsync(async function (req, res, next) {
 
 exports.getAllNonActiveRoutes = catchAsync(async function (req, res, next) {
   const nonActiveroutes = await Route.find({
-    routeStatus: "notStarted",
+    routeStatus: { $ne: "completed" },
   }).populate("driver");
   res.status(200).json({
     message: "All Non Active Routes Found",
@@ -162,7 +162,7 @@ exports.getEmployeeRoute = catchAsync(async function (req, res, next) {
   const formattedTime = timeFormatter(new Date());
 
   const routes = await Route.find({
-    routeStatus: {$ne : "completed"},
+    routeStatus: { $ne: "completed" },
     passengers: { $in: eid },
     shiftTime: { $gt: formattedTime },
   })
