@@ -11,8 +11,11 @@ import MainRouter from "./router/MainRouter";
 import ProjectTheme from "./style_extensions/ProjectTheme";
 import { SnackbarTypes } from "./types/SnackbarTypes";
 import { UserTypes } from "./types/UserTypes";
+import { registerServiceWorker } from "./serviceWorkerRegistration";
 
 function App() {
+  registerServiceWorker();
+
   const [themeMode] = useState<PaletteMode>("light");
   const [userData, setUserData] = useState<UserTypes>();
   const [selectedEmps, setSelectedEmps] = useState<Array<UserTypes>>([]);
@@ -29,7 +32,6 @@ function App() {
     !location.pathname.includes("driver");
 
   useEffect(() => {
-    console.log(document.cookie);
     if (!userData) {
       useAxios
         .post("auth/validate-token", {})
