@@ -115,19 +115,20 @@ const validateToken = catchAsync(async (req, res, next) => {
   if (!currentUser) {
     return next(new AppError(`Invalid Token.`, 401));
   }
-  
+
   res.status(200).json({ message: "User already logged in", currentUser });
 });
 
 const logout = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
   if (token) {
-    res.clearCookie("jwt");
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+    });
 
-    res.status(200).send("Logged Out")
-    // res.status(200).json({
-    //   message: "Logged Out Successfully ",
-    // });
+    res.status(200).send("Logged Out");
   }
 });
 
