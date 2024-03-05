@@ -29,7 +29,7 @@ function App() {
     !location.pathname.includes("driver");
 
   useEffect(() => {
-    if (!userData) {
+    if (!userData && document.cookie.includes("jwt")) {
       useAxios
         .post("auth/validate-token", {})
         .then((res) => {
@@ -41,7 +41,6 @@ function App() {
         })
         .catch((err) => console.log(err));
     }
-    console.log(document.cookie)
   }, []);
 
   return (

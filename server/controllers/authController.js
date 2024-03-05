@@ -60,7 +60,7 @@ const signUp = catchAsync(async (req, res) => {
   //   }
   res.cookie("jwt", token, {
     secure: true,
-    httpOnly: true,
+    httpOnly: false,
     sameSite: "none",
   });
 
@@ -89,7 +89,7 @@ const login = catchAsync(async (req, res, next) => {
   res.cookie("jwt", token, {
     expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
     secure: true,
-    httpOnly: true,
+    httpOnly: false,
     sameSite: "none",
   });
 
