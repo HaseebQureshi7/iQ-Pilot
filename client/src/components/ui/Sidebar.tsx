@@ -29,14 +29,16 @@ function Sidebar() {
   const location = useLocation();
 
   function Logout() {
-    useAxios
-    .post("auth/logout", {})
-    .then((res) => {
-      setUserData?.(undefined);
-        navigate("/");
-        console.log(res);
-      })
-      .catch((err) => console.log(err));
+    document.cookie = ""
+    navigate("/");
+    // useAxios
+    // .post("auth/logout", {})
+    // .then((res) => {
+    //   setUserData?.(undefined);
+    //     navigate("/");
+    //     console.log(res);
+    //   })
+    //   .catch((err) => console.log(err));
     // });
   }
 
