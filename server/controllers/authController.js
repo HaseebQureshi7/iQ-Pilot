@@ -60,7 +60,7 @@ const signUp = catchAsync(async (req, res) => {
   //   }
   res.cookie("jwt", token, {
     secure: true,
-    httpOnly: false,
+    httpOnly: true,
     sameSite: "none",
   });
 
@@ -89,7 +89,7 @@ const login = catchAsync(async (req, res, next) => {
   res.cookie("jwt", token, {
     expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
     secure: true,
-    httpOnly: false,
+    httpOnly: true,
     sameSite: "none",
   });
 
@@ -102,7 +102,7 @@ const login = catchAsync(async (req, res, next) => {
 
 const validateToken = catchAsync(async (req, res, next) => {
   let token = req.cookies.jwt;
-
+  // console.log(token)
   if (!token)
     return next(
       new AppError("You are not logged in! Please log in to get access.", 401)
