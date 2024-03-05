@@ -24,7 +24,11 @@ const signUp = catchAsync(async (req, res) => {
     profilePicture,
   } = req.body;
 
-  const processedImage = await processImage(fName, lName, profilePicture?.split(",")[1]);
+  const processedImage = await processImage(
+    fName,
+    lName,
+    profilePicture?.split(",")[1]
+  );
   const newUser = await User.create({
     fName,
     lName,
@@ -114,17 +118,15 @@ const validateToken = catchAsync(async (req, res, next) => {
   res.status(200).json({ message: "User already logged in", currentUser });
 });
 
-const logout = catchAsync(
-  async (req, res, next) => {
-    const token = req.cookies.jwt;
-    if (token) {
-      res.clearCookie("jwt");
-      // res.redirect("/auth/login");
-      res.status(200).json({
-        message: "Logged Out Successfully ",
-      });
-    }
+const logout = catchAsync(async (req, res, next) => {
+  const token = req.cookies.jwt;
+  if (token) {
+    res.clearCookie("jwt");
+    // res.redirect("/auth/login");
+    res.status(200).json({
+      message: "Logged Out Successfully ",
+    });
   }
-);
+});
 
-module.exports = { signUp, login, validateToken,logout };
+module.exports = { signUp, login, validateToken, logout };
