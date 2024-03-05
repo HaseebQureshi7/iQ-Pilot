@@ -40,7 +40,7 @@ function App() {
           isBaseRoute && navigate(`/${res.data.currentUser?.role}`);
           // }
         })
-        .catch((err) => console.log(err));
+        .catch(() => navigate("/"));
     }
   }, []);
 
