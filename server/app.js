@@ -15,12 +15,19 @@ const path = require("path");
 
 const app = express();
 
+app.use((req, res, next) => {
+  // Set no-cache headers for all responses
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  next();
+});
 app.use(express.static(path.resolve(__dirname, "static/profilePictures")));
 app.use(express.json({ limit: "10mb" }));
 app.use(
   cors({
     credentials: true,
-    exposedHeaders: 'Set-Cookie',
+    exposedHeaders: "Set-Cookie",
     origin: ["http://localhost:5173", "https://ipilot.vercel.app"],
   })
 );
