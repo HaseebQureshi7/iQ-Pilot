@@ -15,6 +15,12 @@ const path = require("path");
 
 const app = express();
 
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "https://ipilot.vercel.app");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.use(express.static(path.resolve(__dirname, "static/profilePictures")));
 app.use(express.json({ limit: "10mb" }));
 app.use(
@@ -24,12 +30,6 @@ app.use(
     origin: ["http://localhost:5173", "https://ipilot.vercel.app"],
   })
 );
-
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://ipilot.vercel.app");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));

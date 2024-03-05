@@ -62,7 +62,6 @@ const signUp = catchAsync(async (req, res) => {
     secure: true,
     httpOnly: true,
     sameSite: "none",
-    domain:"ipilot.vercel.app"
   });
 
   res.status(201).json({
@@ -92,7 +91,6 @@ const login = catchAsync(async (req, res, next) => {
     secure: true,
     httpOnly: true,
     sameSite: "none",
-    domain:"ipilot.vercel.app"
   });
 
   res.status(200).json({
