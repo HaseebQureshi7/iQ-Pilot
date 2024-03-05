@@ -31,10 +31,9 @@ function Sidebar() {
   function Logout() {
     useAxios
       .post("auth/logout", {})
-      .then((res) => {
+      .then(() => {
         navigate("/");
         setUserData?.(undefined);
-        console.log(res);
       })
       .catch((err) => console.log(err));
     // });
