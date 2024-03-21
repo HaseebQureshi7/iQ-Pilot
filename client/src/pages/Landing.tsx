@@ -1,6 +1,6 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import { FormEvent, useContext, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FadeIn } from "../animations/transitions";
 import useAxios from "../api/useAxios";
@@ -60,6 +60,13 @@ function Landing() {
 
     // console.log(loginData);
   }
+
+  useEffect(() => {
+    const timeout: NodeJS.Timeout = setTimeout(() => {
+      setScreenClicked(!screenClicked);
+      return clearTimeout(timeout);
+    }, 1.5 * 1000);
+  }, []);
 
   return (
     <Box sx={{ ...PageFlex, overflow: "hidden" }}>
