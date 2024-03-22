@@ -29,15 +29,13 @@ function Landing() {
   const { mutate: loginUser, status } = useMutation({
     mutationFn: loginMF,
     onSuccess: (data: any) => {
-      // console.log(data.data);
       setOpenSnack({
         open: true,
         message: data.data.message,
         severity: "success",
       });
       const user: UserTypes = data.data.user;
-      //   @ts-ignore
-      setUserData(data.data.user);
+      setUserData?.(data.data.user);
       navigate(`/${user?.role}`);
     },
     onError: (err) => {
@@ -57,8 +55,6 @@ function Landing() {
       password: currentTarget.password.value,
     };
     loginUser(loginData);
-
-    // console.log(loginData);
   }
 
   useEffect(() => {
